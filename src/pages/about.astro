@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+import { getProjects, projectPath } from '../lib/content';
+const representativeProjects = (await getProjects()).filter((project) => project.data.featured).slice(0, 2);
+const page = site.pages.about;
+---
+<BaseLayout title={page.title} description={`关于${site.name}：${site.role}。`}>
+  <header class="page-header"><div class="shell page-header-grid"><div><p class="eyebrow">{page.eyebrow}</p><h1>{page.title}</h1></div><p>{site.about.pageDescription}</p></div></header>
+  <div class="shell">
+    <section class="about-intro">
+      <div class="portrait-mark" aria-hidden="true">{site.monogram}</div>
+      <div class="about-copy"><p>我是{site.name}，{site.about.introduction}</p></div>
+    </section>
+    <div class="about-grid">
+      <section class="about-block"><p class="eyebrow">01 · Focus</p><h2>当前关注</h2><p>{site.about.focus}</p></section>
+      <section class="about-block"><p class="eyebrow">02 · Working</p><h2>工作方式</h2><p>{site.about.workingStyle}</p></section>
+      <section class="about-block"><p class="eyebrow">03 · Work</p><h2>代表项目</h2><ul>{representativeProjects.map((project) => <li><a href={projectPath(project)}>{project.data.title}</a>：{project.data.description}</li>)}</ul></section>
+      <section class="about-block"><p class="eyebrow">04 · Writing</p><h2>常写主题</h2><ul>{site.about.topics.map((topic) => <li>{topic}</li>)}</ul></section>
+      <section class="about-block"><p class="eyebrow">05 · Contact</p><h2>联系我</h2><p>最直接的方式是发邮件到 <a href={site.social.email}>{site.email}</a>。你也可以在 <a href={site.social.github}>GitHub</a> 看正在公开维护的项目。</p></section>
+      <section class="about-block"><p class="eyebrow">06 · Colophon</p><h2>关于本站</h2><p>{site.about.colophon}</p></section>
+    </div>
+  </div>
+</BaseLayout>

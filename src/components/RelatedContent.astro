@@ -1,0 +1,12 @@
+---
+interface Item { href: string; title: string; meta?: string }
+interface Props { title: string; items: Item[] }
+const { title, items } = Astro.props;
+---
+{items.length > 0 && <section class="related-section">
+  <p class="eyebrow">继续探索</p>
+  <h2>{title}</h2>
+  <div class="related-list">
+    {items.map((item) => <a href={item.href}><span>{item.title}</span>{item.meta && <small>{item.meta}</small>}<b aria-hidden="true">→</b></a>)}
+  </div>
+</section>}

@@ -1,0 +1,11 @@
+{
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "@resource/attachments",
+  "defaultViewMode": "source",
+  "livePreview": true,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "articles",
+  "newLinkFormat": "relative",
+  "showUnsupportedFiles": true,
+  "useMarkdownLinks": true
+}

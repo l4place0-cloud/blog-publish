@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Tags from '../components/Tags.astro';
+import { projectStatus } from '../config/site';
+import { formatDate } from '../lib/content';
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+<BaseLayout title={project.data.title} description={project.data.description}>
+  <article class="project-page shell">
+    <a class="back-link" href="/projects">← 返回项目</a>
+    <header class="project-header">
+      <div>
+        <p class="eyebrow">{projectStatus[project.data.status]}</p>
+        <h1>{project.data.title}</h1>
+        <p class="lead">{project.data.description}</p>
+        <div class="project-buttons">
+          {project.data.links.website && <a class="button primary" href={project.data.links.website}>访问网站 ↗</a>}
+          {project.data.links.github && <a class="button secondary" href={project.data.links.github}>查看源码 ↗</a>}
+        </div>
+      </div>
+      <dl class="project-facts">
+        <div><dt>时间</dt><dd>{formatDate(project.data.startedAt)} — {project.data.endedAt ? formatDate(project.data.endedAt) : '现在'}</dd></div>
+        <div><dt>角色</dt><dd>{project.data.role.join(' / ')}</dd></div>
+        <div><dt>技术</dt><dd><Tags tags={project.data.stack} /></dd></div>
+      </dl>
+    </header>
+    {project.data.cover && <div class="project-cover"><Image src={project.data.cover} alt={`${project.data.title} 项目封面`} widths={[960, 1440, 1920]} sizes="(max-width: 1200px) 100vw, 1200px" /></div>}
+    <div class="prose project-prose"><Content /></div>
+    <slot name="related" />
+  </article>
+</BaseLayout>

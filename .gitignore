@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# Obsidian 的本机窗口与工作区状态
+src/content/.obsidian/workspace.json
+src/content/.obsidian/workspace-mobile.json
+src/content/.obsidian/cache/

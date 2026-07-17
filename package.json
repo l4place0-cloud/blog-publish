@@ -1,0 +1,27 @@
+{
+  "name": "l4p-blog",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.3",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/jetbrains-mono": "5.2.8",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.9",
+    "lxgw-wenkai-webfont": "1.7.0",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
+  }
+}

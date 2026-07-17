@@ -1,0 +1,42 @@
+---
+import { navItems, site } from '../config/site';
+import ThemeToggle from './ThemeToggle.astro';
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="shell nav-shell">
+    <a class="wordmark" href="/" aria-label={`${site.name}，返回首页`}>
+      <span>{site.shortName}</span><span class="wordmark-name">{site.name}</span>
+    </a>
+    <button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航">
+      <span></span><span></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="主导航">
+      {navItems.map((item) => (
+        <a href={item.href} aria-current={pathname.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>
+      ))}
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script>

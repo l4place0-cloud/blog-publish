@@ -1,0 +1,14 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { articlePath, formatDate, readingTime } from '../lib/content';
+import Tags from './Tags.astro';
+interface Props { article: CollectionEntry<'articles'>; featured?: boolean }
+const { article, featured = false } = Astro.props;
+---
+
+<article class:list={['article-card', { featured }]}>
+  <div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt)}</time><span>{readingTime(article.body)} 分钟</span></div>
+  <h3><a href={articlePath(article)}>{article.data.title}</a></h3>
+  <p>{article.data.description}</p>
+  <Tags tags={article.data.tags} />
+</article>

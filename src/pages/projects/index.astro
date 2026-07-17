@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { site } from '../../config/site';
+import { getProjects } from '../../lib/content';
+const projects = await getProjects();
+const page = site.pages.projects;
+const featured = projects.filter((project) => project.data.featured);
+const ongoing = projects.filter((project) => ['active', 'maintained'].includes(project.data.status) && !project.data.featured);
+const others = projects.filter((project) => !project.data.featured && !ongoing.includes(project));
+---
+<BaseLayout title={page.title} description={page.seoDescription}>
+  <header class="page-header"><div class="shell page-header-grid"><div><p class="eyebrow">{page.eyebrow}</p><h1>{page.title}</h1></div><p>{page.description}</p></div></header>
+  <div class="shell page-content">
+    {featured.length > 0 && <section aria-labelledby="featured-title"><div class="section-heading"><h2 id="featured-title">精选</h2></div><div class="project-grid">{featured.map((project) => <ProjectCard project={project} />)}</div></section>}
+    {ongoing.length > 0 && <section class="home-section" aria-labelledby="ongoing-title"><div class="section-heading"><h2 id="ongoing-title">进行中 / 持续维护</h2></div><div class="project-grid">{ongoing.map((project) => <ProjectCard project={project} />)}</div></section>}
+    {others.length > 0 && <section class="home-section" aria-labelledby="other-title"><div class="section-heading"><h2 id="other-title">其他项目</h2></div><div style="display:grid; gap:24px">{others.map((project) => <ProjectCard project={project} compact />)}</div></section>}
+  </div>
+</BaseLayout>

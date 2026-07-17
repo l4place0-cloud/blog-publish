@@ -1,0 +1,15 @@
+---
+import { site, socialLinks } from '../config/site';
+---
+
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div>
+      <p class="footer-title">{site.footer.tagline[0]}<br />{site.footer.tagline[1]}</p>
+      <p class="muted">© {new Date().getFullYear()} {site.name} · {site.footer.note}</p>
+    </div>
+    <div class="footer-links" aria-label="外部链接">
+      {socialLinks.map((link) => <a href={link.href} rel={'rel' in link ? link.rel : undefined}>{link.label} ↗</a>)}
+    </div>
+  </div>
+</footer>

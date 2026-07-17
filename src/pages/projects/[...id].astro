@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import RelatedContent from '../../components/RelatedContent.astro';
+import { articlePath, getArticles, getProjects, getSpace, projectPath, spacePath } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const [articles, space] = await Promise.all([getArticles(), getSpace()]);
+const relatedArticles = articles.filter((article) => article.data.projects.some((ref) => ref.id === project.id));
+const updates = space.filter((item) => item.data.project?.id === project.id);
+---
+<ProjectLayout project={project}>
+  <div slot="related">
+    <RelatedContent title="项目动态" items={updates.map((item) => ({ href: spacePath(item), title: item.data.title ?? item.data.excerpt ?? '项目动态', meta: item.data.publishedAt.toLocaleDateString('zh-CN') }))} />
+    <RelatedContent title="相关文章" items={relatedArticles.map((article) => ({ href: articlePath(article), title: article.data.title, meta: article.data.description }))} />
+    <p style="margin-top:42px"><a class="back-link" href={projectPath(project)}>本页永久链接：{projectPath(project)}</a></p>
+  </div>
+</ProjectLayout>

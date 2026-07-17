@@ -1,0 +1,29 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import RelatedContent from '../../components/RelatedContent.astro';
+import { articlePath, getArticles, projectPath, spacePath } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({ params: { id: article.id }, props: { article, articles } }));
+}
+
+interface Props { article: CollectionEntry<'articles'>; articles: CollectionEntry<'articles'>[] }
+const { article, articles } = Astro.props as Props;
+const relatedProjects = (await Promise.all(article.data.projects.map((ref) => getEntry(ref)))).filter(Boolean) as CollectionEntry<'projects'>[];
+const sources = (await Promise.all(article.data.sourceSpace.map((ref) => getEntry(ref)))).filter(Boolean) as CollectionEntry<'space'>[];
+const current = articles.findIndex((entry) => entry.id === article.id);
+const newer = current > 0 ? articles[current - 1] : undefined;
+const older = current < articles.length - 1 ? articles[current + 1] : undefined;
+---
+<ArticleLayout article={article}>
+  <Fragment slot="related">
+    <RelatedContent title="相关项目" items={relatedProjects.map((project) => ({ href: projectPath(project), title: project.data.title, meta: project.data.description }))} />
+    <RelatedContent title="来源空间记录" items={sources.map((item) => ({ href: spacePath(item), title: item.data.title ?? item.data.excerpt ?? '空间记录' }))} />
+  </Fragment>
+  <nav class="pager" slot="pager" aria-label="相邻文章">
+    {newer ? <a href={articlePath(newer)}><small>上一篇</small>{newer.data.title}</a> : <span></span>}
+    {older && <a href={articlePath(older)} style="text-align:right"><small>下一篇</small>{older.data.title}</a>}
+  </nav>
+</ArticleLayout>

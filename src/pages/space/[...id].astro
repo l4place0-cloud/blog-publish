@@ -1,0 +1,37 @@
+---
+import { getEntry, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedContent from '../../components/RelatedContent.astro';
+import Tags from '../../components/Tags.astro';
+import { spaceType } from '../../config/site';
+import { articlePath, formatDate, getSpace, projectPath, spacePath } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const space = await getSpace();
+  return space.map((item) => ({ params: { id: item.id }, props: { item, space } }));
+}
+interface Props { item: CollectionEntry<'space'>; space: CollectionEntry<'space'>[] }
+const { item, space } = Astro.props;
+const { Content } = await render(item);
+const relatedProject = item.data.project ? await getEntry(item.data.project) : undefined;
+const relatedArticle = item.data.relatedArticle ? await getEntry(item.data.relatedArticle) : undefined;
+const current = space.findIndex((entry) => entry.id === item.id);
+const newer = current > 0 ? space[current - 1] : undefined;
+const older = current < space.length - 1 ? space[current + 1] : undefined;
+const pageTitle = item.data.title ?? item.data.excerpt?.slice(0, 36) ?? `${formatDate(item.data.publishedAt)}的${spaceType[item.data.type]}`;
+---
+<BaseLayout title={pageTitle} description={item.data.excerpt ?? `${spaceType[item.data.type]}，发布于${formatDate(item.data.publishedAt)}`}>
+  <article class="space-detail">
+    <a class="back-link" href="/space">← 返回空间</a>
+    <header><p class="eyebrow">{spaceType[item.data.type]} · {formatDate(item.data.publishedAt)}</p>{item.data.title && <h1>{item.data.title}</h1>}<Tags tags={item.data.tags} /></header>
+    <div class="prose"><Content /></div>
+    <RelatedContent title="内容关联" items={[
+      ...(relatedProject ? [{ href: projectPath(relatedProject), title: relatedProject.data.title, meta: '关联项目' }] : []),
+      ...(relatedArticle ? [{ href: articlePath(relatedArticle), title: relatedArticle.data.title, meta: '后来整理成的文章' }] : []),
+    ]} />
+    <nav class="pager" aria-label="相邻空间记录">
+      {newer ? <a href={spacePath(newer)}><small>前一条</small>{newer.data.title ?? newer.data.excerpt?.slice(0, 30)}</a> : <span></span>}
+      {older && <a href={spacePath(older)} style="text-align:right"><small>后一条</small>{older.data.title ?? older.data.excerpt?.slice(0, 30)}</a>}
+    </nav>
+  </article>
+</BaseLayout>

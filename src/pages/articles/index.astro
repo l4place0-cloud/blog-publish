@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { site } from '../../config/site';
+import { getArticles } from '../../lib/content';
+const articles = await getArticles();
+const featured = articles.find((article) => article.data.featured);
+const page = site.pages.articles;
+---
+<BaseLayout title={page.title} description={page.seoDescription}>
+  <header class="page-header"><div class="shell page-header-grid"><div><p class="eyebrow">{page.eyebrow}</p><h1>{page.title}</h1></div><p>{page.description}</p></div></header>
+  <div class="shell page-content">
+    {featured && <div style="margin-bottom: 45px"><ArticleCard article={featured} featured /></div>}
+    <div class="article-list">{articles.filter((article) => article.id !== featured?.id).map((article) => <ArticleCard article={article} />)}</div>
+  </div>
+</BaseLayout>

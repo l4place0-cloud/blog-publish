@@ -1,0 +1,33 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SEO from '../components/SEO.astro';
+import '@fontsource-variable/jetbrains-mono/index.css';
+import 'lxgw-wenkai-webfont/lxgwwenkai-regular.css';
+import 'lxgw-wenkai-webfont/lxgwwenkai-bold.css';
+import '../styles/global.css';
+interface Props {
+  title?: string; description?: string; image?: string; type?: 'website' | 'article'; publishedAt?: Date; updatedAt?: Date;
+}
+const props = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f3efe5" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script>
+    <SEO {...props} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+  </body>
+</html>

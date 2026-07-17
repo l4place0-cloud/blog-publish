@@ -1,0 +1,27 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Tags from '../components/Tags.astro';
+import { formatDate, readingTime } from '../lib/content';
+interface Props { article: CollectionEntry<'articles'> }
+const { article } = Astro.props;
+const { Content, headings } = await render(article);
+---
+<BaseLayout title={article.data.title} description={article.data.description} type="article" publishedAt={article.data.publishedAt} updatedAt={article.data.updatedAt}>
+  <article class="essay-page shell">
+    <a class="back-link" href="/articles">← 返回文章</a>
+    <header class="essay-header">
+      <p class="eyebrow">文章 · {formatDate(article.data.publishedAt)}</p>
+      <h1>{article.data.title}</h1>
+      <p class="lead">{article.data.description}</p>
+      <div class="essay-meta"><span>{readingTime(article.body)} 分钟阅读</span>{article.data.updatedAt && <span>更新于 {formatDate(article.data.updatedAt)}</span>}</div>
+      <Tags tags={article.data.tags} />
+    </header>
+    <div class="essay-grid">
+      <div class="prose"><Content /></div>
+      {headings.length > 2 && <aside class="toc" aria-label="文章目录"><p>目录</p><ol>{headings.filter(h => h.depth < 4).map(h => <li class={`depth-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></aside>}
+    </div>
+    <slot name="related" />
+    <slot name="pager" />
+  </article>
+</BaseLayout>

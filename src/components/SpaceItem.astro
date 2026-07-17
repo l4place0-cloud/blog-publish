@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { spaceType } from '../config/site';
+import { externalDomain, formatDate, spacePath } from '../lib/content';
+import Tags from './Tags.astro';
+interface Props { item: CollectionEntry<'space'> }
+const { item } = Astro.props;
+const preview = item.data.excerpt ?? (item.body ?? '').replace(/[#*`>\[\]]/g, '').trim().slice(0, 150);
+---
+
+<article class:list={['space-item', `space-${item.data.type}`]}>
+  <div class="space-rail"><span class="space-marker"></span></div>
+  <div class="space-content">
+    <div class="space-meta">
+      <span>{spaceType[item.data.type]}</span>
+      <time datetime={item.data.publishedAt.toISOString()}>{formatDate(item.data.publishedAt)}</time>
+    </div>
+    {item.data.title && <h3><a href={spacePath(item)}>{item.data.title}</a></h3>}
+    {item.data.type === 'link' && item.data.url && <a class="link-preview" href={item.data.url}>
+      <span>{item.data.title ?? externalDomain(item.data.url)}</span><small>{externalDomain(item.data.url)} ↗</small>
+    </a>}
+    {item.data.type === 'media' && <div class="media-line"><span>{item.data.mediaKind}</span><strong>《{item.data.mediaTitle}》</strong>{item.data.mediaCreator && <span>{item.data.mediaCreator}</span>}</div>}
+    {item.data.images[0] && <a class="space-image" href={spacePath(item)}><Image src={item.data.images[0]} alt={item.data.title ?? '空间记录图片'} widths={[640, 960]} sizes="(max-width: 720px) 100vw, 720px" /></a>}
+    <p>{preview}</p>
+    <Tags tags={item.data.tags} />
+    <a class="permalink" href={spacePath(item)} aria-label={`查看${item.data.title ?? spaceType[item.data.type]}的永久链接`}>永久链接 →</a>
+  </div>
+</article>
