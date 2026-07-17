@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { site } from '../config/site';
 import { getArticles } from '../lib/content';
+import { withBase } from '../lib/paths';
 
 export async function GET(context: { site?: URL }) {
   const articles = await getArticles();
@@ -13,7 +14,7 @@ export async function GET(context: { site?: URL }) {
       title: article.data.title,
       description: article.data.description,
       pubDate: article.data.publishedAt,
-      link: `/articles/${article.id}`,
+      link: withBase(`/articles/${article.id}`),
       categories: article.data.tags,
     })),
   });

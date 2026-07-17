@@ -5,6 +5,7 @@ import RelatedContent from '../../components/RelatedContent.astro';
 import Tags from '../../components/Tags.astro';
 import { spaceType } from '../../config/site';
 import { articlePath, formatDate, getSpace, projectPath, spacePath } from '../../lib/content';
+import { withBase } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const space = await getSpace();
@@ -22,7 +23,7 @@ const pageTitle = item.data.title ?? item.data.excerpt?.slice(0, 36) ?? `${forma
 ---
 <BaseLayout title={pageTitle} description={item.data.excerpt ?? `${spaceType[item.data.type]}，发布于${formatDate(item.data.publishedAt)}`}>
   <article class="space-detail">
-    <a class="back-link" href="/space">← 返回空间</a>
+    <a class="back-link" href={withBase('/space')}>← 返回空间</a>
     <header><p class="eyebrow">{spaceType[item.data.type]} · {formatDate(item.data.publishedAt)}</p>{item.data.title && <h1>{item.data.title}</h1>}<Tags tags={item.data.tags} /></header>
     <div class="prose"><Content /></div>
     <RelatedContent title="内容关联" items={[

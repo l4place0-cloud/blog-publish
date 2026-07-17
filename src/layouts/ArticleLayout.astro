@@ -3,13 +3,14 @@ import { render, type CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import Tags from '../components/Tags.astro';
 import { formatDate, readingTime } from '../lib/content';
+import { withBase } from '../lib/paths';
 interface Props { article: CollectionEntry<'articles'> }
 const { article } = Astro.props;
 const { Content, headings } = await render(article);
 ---
 <BaseLayout title={article.data.title} description={article.data.description} type="article" publishedAt={article.data.publishedAt} updatedAt={article.data.updatedAt}>
   <article class="essay-page shell">
-    <a class="back-link" href="/articles">← 返回文章</a>
+    <a class="back-link" href={withBase('/articles')}>← 返回文章</a>
     <header class="essay-header">
       <p class="eyebrow">文章 · {formatDate(article.data.publishedAt)}</p>
       <h1>{article.data.title}</h1>

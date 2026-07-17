@@ -1,5 +1,6 @@
 ---
 import { site, socialLinks } from '../config/site';
+import { withBase } from '../lib/paths';
 ---
 
 <footer class="site-footer">
@@ -9,7 +10,7 @@ import { site, socialLinks } from '../config/site';
       <p class="muted">© {new Date().getFullYear()} {site.name} · {site.footer.note}</p>
     </div>
     <div class="footer-links" aria-label="外部链接">
-      {socialLinks.map((link) => <a href={link.href} rel={'rel' in link ? link.rel : undefined}>{link.label} ↗</a>)}
+      {socialLinks.map((link) => <a href={withBase(link.href)} rel={'rel' in link ? link.rel : undefined}>{link.label} ↗</a>)}
     </div>
   </div>
 </footer>

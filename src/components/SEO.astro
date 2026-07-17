@@ -1,5 +1,6 @@
 ---
 import { site } from '../config/site';
+import { withBase } from '../lib/paths';
 
 interface Props {
   title?: string;
@@ -20,7 +21,7 @@ const {
 } = Astro.props;
 const pageTitle = title === site.title ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
-const imageUrl = new URL(image, Astro.site ?? site.url);
+const imageUrl = new URL(withBase(image), Astro.site ?? site.url);
 ---
 
 <title>{pageTitle}</title>
@@ -38,4 +39,4 @@ const imageUrl = new URL(image, Astro.site ?? site.url);
 <meta name="twitter:image" content={imageUrl} />
 {publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
 {updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
-<link rel="alternate" type="application/rss+xml" title={`${site.name} 的文章`} href={new URL('/rss.xml', Astro.site ?? site.url)} />
+<link rel="alternate" type="application/rss+xml" title={`${site.name} 的文章`} href={new URL(withBase('/rss.xml'), Astro.site ?? site.url)} />

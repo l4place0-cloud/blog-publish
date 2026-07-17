@@ -6,8 +6,12 @@ import tailwindcss from '@tailwindcss/vite';
 import { site } from './src/config/site';
 import remarkSolutionTitle from './src/lib/remark-solution-title.mjs';
 
+const deploymentSite = process.env.SITE_URL ?? site.url;
+const deploymentBase = process.env.BASE_PATH ?? '/';
+
 export default defineConfig({
-  site: site.url,
+  site: deploymentSite,
+  base: deploymentBase,
   output: 'static',
   integrations: [mdx(), sitemap()],
   vite: { plugins: [tailwindcss()] },

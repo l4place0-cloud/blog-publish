@@ -5,6 +5,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import SpaceItem from '../components/SpaceItem.astro';
 import { site, socialLinks } from '../config/site';
 import { formatDate, getArticles, getProjects, getSpace } from '../lib/content';
+import { withBase } from '../lib/paths';
 
 const [articles, projects, space] = await Promise.all([getArticles(), getProjects(), getSpace()]);
 const featuredProjects = projects.filter((project) => project.data.featured).slice(0, 3);
@@ -24,8 +25,8 @@ const recentSpace = space.slice(0, 4);
       <div class="hero-side">
         <div class="hero-index"><span>{site.systemLabel}</span><span>001</span></div>
         <div class="hero-actions">
-          <a class="button primary" href="/projects">查看项目</a>
-          <a class="button secondary" href="/articles">阅读文章</a>
+          <a class="button primary" href={withBase('/projects')}>查看项目</a>
+          <a class="button secondary" href={withBase('/articles')}>阅读文章</a>
         </div>
         <div class="social-row">
           {socialLinks.map((link) => <a href={link.href}>{link.label} ↗</a>)}
@@ -43,17 +44,17 @@ const recentSpace = space.slice(0, 4);
   </section>
 
   <section class="home-section shell" aria-labelledby="featured-projects">
-    <div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="featured-projects">精选项目</h2></div><a class="text-link" href="/projects">查看全部项目 <span>→</span></a></div>
+    <div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="featured-projects">精选项目</h2></div><a class="text-link" href={withBase('/projects')}>查看全部项目 <span>→</span></a></div>
     <div class="project-grid">{featuredProjects.map((project) => <ProjectCard project={project} />)}</div>
   </section>
 
   <section class="home-section shell" aria-labelledby="recent-articles">
-    <div class="section-heading"><div><p class="eyebrow">Long-form</p><h2 id="recent-articles">最近文章</h2></div><a class="text-link" href="/articles">查看全部文章 <span>→</span></a></div>
+    <div class="section-heading"><div><p class="eyebrow">Long-form</p><h2 id="recent-articles">最近文章</h2></div><a class="text-link" href={withBase('/articles')}>查看全部文章 <span>→</span></a></div>
     <div class="article-list">{recentArticles.map((article, index) => <ArticleCard article={article} featured={index === 0 && article.data.featured} />)}</div>
   </section>
 
   <section class="home-section shell" aria-labelledby="latest-space">
-    <div class="section-heading"><div><p class="eyebrow">In the moment</p><h2 id="latest-space">最新空间</h2></div><a class="text-link" href="/space">进入空间 <span>→</span></a></div>
+    <div class="section-heading"><div><p class="eyebrow">In the moment</p><h2 id="latest-space">最新空间</h2></div><a class="text-link" href={withBase('/space')}>进入空间 <span>→</span></a></div>
     <div class="space-list">{recentSpace.map((item) => <SpaceItem item={item} />)}</div>
   </section>
 
@@ -62,7 +63,7 @@ const recentSpace = space.slice(0, 4);
     <div>
       <p class="eyebrow">About & contact</p>
       <div class="about-copy"><p>{site.bio}</p></div>
-      <a class="text-link" href="/about">更多关于我 <span>→</span></a>
+      <a class="text-link" href={withBase('/about')}>更多关于我 <span>→</span></a>
       <div class="social-row" style="margin-top: 24px">{socialLinks.map((link) => <a href={link.href}>{link.label} ↗</a>)}</div>
     </div>
   </section>

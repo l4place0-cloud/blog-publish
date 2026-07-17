@@ -5,13 +5,14 @@ import BaseLayout from './BaseLayout.astro';
 import Tags from '../components/Tags.astro';
 import { projectStatus } from '../config/site';
 import { formatDate } from '../lib/content';
+import { withBase } from '../lib/paths';
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
 const { Content } = await render(project);
 ---
 <BaseLayout title={project.data.title} description={project.data.description}>
   <article class="project-page shell">
-    <a class="back-link" href="/projects">← 返回项目</a>
+    <a class="back-link" href={withBase('/projects')}>← 返回项目</a>
     <header class="project-header">
       <div>
         <p class="eyebrow">{projectStatus[project.data.status]}</p>

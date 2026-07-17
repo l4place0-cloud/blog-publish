@@ -1,12 +1,13 @@
 ---
 import { navItems, site } from '../config/site';
 import ThemeToggle from './ThemeToggle.astro';
+import { withBase } from '../lib/paths';
 const pathname = Astro.url.pathname;
 ---
 
 <header class="site-header">
   <div class="shell nav-shell">
-    <a class="wordmark" href="/" aria-label={`${site.name}，返回首页`}>
+    <a class="wordmark" href={withBase('/')} aria-label={`${site.name}，返回首页`}>
       <span>{site.shortName}</span><span class="wordmark-name">{site.name}</span>
     </a>
     <button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航">
@@ -14,7 +15,7 @@ const pathname = Astro.url.pathname;
     </button>
     <nav id="site-nav" class="site-nav" aria-label="主导航">
       {navItems.map((item) => (
-        <a href={item.href} aria-current={pathname.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>
+        <a href={withBase(item.href)} aria-current={pathname.startsWith(withBase(item.href)) ? 'page' : undefined}>{item.label}</a>
       ))}
     </nav>
     <ThemeToggle />

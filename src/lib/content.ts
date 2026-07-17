@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { site } from '../config/site';
+import { withBase } from './paths';
 
 const isPublished = <T extends { data: { draft: boolean } }>(entry: T) => !entry.data.draft;
 
@@ -20,9 +21,9 @@ export async function getSpace() {
   return (await getCollection('space')).filter(isPublished).sort(byDateDesc);
 }
 
-export const articlePath = (entry: CollectionEntry<'articles'>) => `/articles/${entry.id}`;
-export const projectPath = (entry: CollectionEntry<'projects'>) => `/projects/${entry.id}`;
-export const spacePath = (entry: CollectionEntry<'space'>) => `/space/${entry.id}`;
+export const articlePath = (entry: CollectionEntry<'articles'>) => withBase(`/articles/${entry.id}`);
+export const projectPath = (entry: CollectionEntry<'projects'>) => withBase(`/projects/${entry.id}`);
+export const spacePath = (entry: CollectionEntry<'space'>) => withBase(`/space/${entry.id}`);
 
 export function formatDate(date: Date, withYear = true) {
   return new Intl.DateTimeFormat(site.language, {

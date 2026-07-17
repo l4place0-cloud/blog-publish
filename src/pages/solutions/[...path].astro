@@ -3,9 +3,11 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Tags from '../../components/Tags.astro';
 import { formatDate } from '../../lib/content';
+import { withBase } from '../../lib/paths';
 import {
   getSolutions,
   solutionPath,
+  solutionRoute,
   solutionPlatform,
   solutionPlatforms,
   solutionTags,
@@ -17,7 +19,7 @@ export async function getStaticPaths() {
   const solutions = await getSolutions();
   const paths = new Set<string>();
   return solutions.map((solution) => {
-    const path = solutionPath(solution).replace(/^\/solutions\//, '');
+    const path = solutionRoute(solution).replace(/^\/solutions\//, '');
     if (paths.has(path)) throw new Error(`Duplicate solution route: ${path}`);
     paths.add(path);
     return { params: { path }, props: { solution, solutions } };
@@ -39,7 +41,7 @@ const description = `${title} 的题意拆解、解题思路、复杂度分析�
 
 <BaseLayout title={title} description={description} type="article" publishedAt={solution.data.date}>
   <article class="solution-detail shell">
-    <a class="back-link" href="/solutions">← 返回题解</a>
+    <a class="back-link" href={withBase('/solutions')}>← 返回题解</a>
     <header class="solution-detail-header">
       <div>
         <p class="eyebrow">{platformInfo.label} · {formatDate(solution.data.date)}</p>

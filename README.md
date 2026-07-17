@@ -44,6 +44,17 @@ pnpm preview
 
 构建产物位于 `dist/`，可以部署到任意普通静态托管平台。
 
+## GitHub Pages 与个人域名
+
+`.github/workflows/deploy.yml` 会在 `main` 更新后自动构建并发布 GitHub Pages。部署地址和项目路径不硬编码在页面中，而是由仓库变量控制：
+
+```text
+SITE_URL=https://l4place0.github.io
+BASE_PATH=/l4p-blog
+```
+
+以后切换到个人域名时，只需将 `SITE_URL` 改为个人域名、将 `BASE_PATH` 改为 `/`，再完成 Pages 自定义域名与 DNS 配置。站内导航、静态资源、RSS、Canonical URL 和 Sitemap 会在下一次构建时自动切换，不需要批量修改页面链接。
+
 ## 主要目录
 
 ```text

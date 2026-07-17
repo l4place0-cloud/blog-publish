@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { withBase } from './paths';
 
 export const solutionPlatforms = {
   luogu: { label: '洛谷', host: 'luogu.com.cn' },
@@ -60,8 +61,12 @@ export function solutionSlug(entry: SolutionEntry) {
   return fallbackSlug(solutionTitle(entry));
 }
 
-export function solutionPath(entry: SolutionEntry) {
+export function solutionRoute(entry: SolutionEntry) {
   return `/solutions/${solutionPlatform(entry)}/${solutionSlug(entry)}`;
+}
+
+export function solutionPath(entry: SolutionEntry) {
+  return withBase(solutionRoute(entry));
 }
 
 export function solutionTags(entry: SolutionEntry) {
