@@ -65,4 +65,23 @@ const space = defineCollection({
   }),
 });
 
-export const collections = { articles, projects, space };
+const solutions = defineCollection({
+  loader: glob({
+    pattern: [
+      'codeforces.com/**/*.md',
+      'leetcode.cn/**/*.md',
+      'luogu.com.cn/**/*.md',
+      'nowcoder.com/**/*.md',
+      'poj.org/**/*.md',
+    ],
+    base: './sources/my-solve',
+  }),
+  schema: z.object({
+    type: z.literal('solution'),
+    tags: z.array(z.string()).default([]),
+    date: z.coerce.date(),
+    source: z.url(),
+  }),
+});
+
+export const collections = { articles, projects, space, solutions };

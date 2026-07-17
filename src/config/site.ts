@@ -47,6 +47,12 @@ export const site = {
       description: '灵光一现.',
       seoDescription: '随笔、项目动态、链接收藏，以及一些想法。',
     },
+    solutions: {
+      eyebrow: 'Solutions',
+      title: '题解',
+      description: '算法题的解法、复盘与代码。',
+      seoDescription: '算法竞赛与编程题的题意拆解、解题思路、复杂度分析和代码实现。',
+    },
     about: {
       eyebrow: 'About',
       title: '关于',
@@ -86,6 +92,7 @@ export const socialLinks = [
 export const navItems = [
   { href: '/articles', label: '文章' },
   { href: '/projects', label: '项目' },
+  { href: '/solutions', label: '题解' },
   { href: '/space', label: '空间' },
   { href: '/about', label: '关于' },
 ] as const;

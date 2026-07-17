@@ -4,11 +4,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-solutions.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/sync-solutions.mjs",
     "build": "astro build",
+    "build:latest": "pnpm solutions:pull && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "solutions:check": "node scripts/sync-solutions.mjs",
+    "solutions:pull": "node scripts/sync-solutions.mjs --pull"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.3",

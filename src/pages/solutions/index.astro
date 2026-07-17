@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../config/site';
+import {
+  formatSolutionDate,
+  getSolutions,
+  solutionPath,
+  solutionPlatform,
+  solutionPlatforms,
+  solutionSearchText,
+  solutionTags,
+  solutionTitle,
+  type SolutionPlatform,
+} from '../../lib/solutions';
+
+const solutions = await getSolutions();
+const page = site.pages.solutions;
+const platformOrder = Object.keys(solutionPlatforms) as SolutionPlatform[];
+const platformStats = platformOrder.map((key) => ({
+  key,
+  ...solutionPlatforms[key],
+  count: solutions.filter((solution) => solutionPlatform(solution) === key).length,
+})).filter((platform) => platform.count > 0);
+const tagStats = Object.entries(solutions.flatMap((solution) => solution.data.tags).reduce<Record<string, number>>((counts, tag) => {
+  counts[tag] = (counts[tag] ?? 0) + 1;
+  return counts;
+}, {})).sort((a, b) => b[1] - a[1]);
+const popularTags = tagStats.slice(0, 7);
+const years = solutions.map((solution) => solution.data.date.getFullYear());
+const yearRange = `${Math.min(...years)}—${Math.max(...years)}`;
+---
+
+<BaseLayout title={page.title} description={page.seoDescription}>
+  <header class="page-header solution-page-header">
+    <div class="shell page-header-grid">
+      <div><p class="eyebrow">{page.eyebrow}</p><h1>{page.title}</h1></div>
+      <p>{page.description}<br />记录从题意拆解到实现验证的完整过程。</p>
+    </div>
+  </header>
+
+  <div class="shell page-content solution-index" data-solution-index>
+    <section class="solution-stats" aria-label="题解统计">
+      <div class="solution-stat"><strong>{solutions.length}</strong><span>题解总数</span></div>
+      <div class="solution-stat"><strong>{platformStats.length}</strong><span>在线平台</span></div>
+      <div class="solution-stat"><strong>{yearRange}</strong><span>解题记录</span></div>
+      <div class="solution-platform-stats">
+        {platformStats.map((platform) => <span><b>{platform.label}</b> {platform.count}</span>)}
+      </div>
+    </section>
+
+    <section class="solution-controls" aria-label="筛选题解">
+      <label class="solution-search">
+        <span aria-hidden="true">⌕</span>
+        <span class="sr-only">搜索题解</span>
+        <input type="search" placeholder="搜索题号、标题或标签…" autocomplete="off" data-solution-search />
+      </label>
+      <div class="solution-filter-row" aria-label="平台筛选">
+        <button class="solution-filter is-active" type="button" data-platform="all" aria-pressed="true">全部</button>
+        {platformStats.map((platform) => (
+          <button class="solution-filter" type="button" data-platform={platform.key} aria-pressed="false">{platform.label}</button>
+        ))}
+      </div>
+      <div class="solution-tag-filters" aria-label="算法标签筛选">
+        <span>热门标签</span>
+        <button class="solution-tag-filter is-active" type="button" data-tag="all" aria-pressed="true">全部</button>
+        {popularTags.map(([tag, count]) => (
+          <button class="solution-tag-filter" type="button" data-tag={tag} aria-pressed="false">{tag.replace(/^算法\//, '')}<small>{count}</small></button>
+        ))}
+      </div>
+    </section>
+
+    <div class="solution-results-meta">
+      <span data-solution-count>显示 {solutions.length} 篇题解</span>
+      <span>按完成日期排序</span>
+    </div>
+    <div class="solution-list-heading" aria-hidden="true">
+      <span>平台</span><span>题目</span><span>标签</span><span>完成日期</span><span></span>
+    </div>
+    <section class="solution-list" aria-label="题解列表">
+      {solutions.map((solution) => {
+        const platform = solutionPlatform(solution);
+        return (
+          <a
+            class="solution-row"
+            href={solutionPath(solution)}
+            data-solution-row
+            data-platform={platform}
+            data-tags={solution.data.tags.join('|')}
+            data-search={solutionSearchText(solution)}
+          >
+            <span class="solution-row-platform">{solutionPlatforms[platform].label}</span>
+            <span class="solution-row-title"><strong>{solutionTitle(solution)}</strong><small>{new URL(solution.data.source).hostname.replace(/^www\./, '')}</small></span>
+            <span class="solution-row-tags">{solutionTags(solution).slice(0, 3).map((tag) => <span>{tag}</span>)}</span>
+            <time datetime={solution.data.date.toISOString()}>{formatSolutionDate(solution.data.date)}</time>
+            <span class="solution-row-arrow" aria-hidden="true">↗</span>
+          </a>
+        );
+      })}
+    </section>
+    <p class="solution-empty" data-solution-empty hidden>没有找到匹配的题解。试试更短的关键词或清除筛选条件。</p>
+  </div>
+</BaseLayout>
+
+<script>
+  const index = document.querySelector<HTMLElement>('[data-solution-index]');
+  if (index) {
+    const search = index.querySelector<HTMLInputElement>('[data-solution-search]');
+    const rows = Array.from(index.querySelectorAll<HTMLElement>('[data-solution-row]'));
+    const platformButtons = Array.from(index.querySelectorAll<HTMLButtonElement>('[data-platform]'));
+    const tagButtons = Array.from(index.querySelectorAll<HTMLButtonElement>('[data-tag]'));
+    const counter = index.querySelector<HTMLElement>('[data-solution-count]');
+    const empty = index.querySelector<HTMLElement>('[data-solution-empty]');
+    let activePlatform = 'all';
+    let activeTag = 'all';
+
+    const applyFilters = () => {
+      const query = search?.value.trim().toLocaleLowerCase('zh-CN') ?? '';
+      let visible = 0;
+      rows.forEach((row) => {
+        const matchesQuery = !query || (row.dataset.search ?? '').includes(query);
+        const matchesPlatform = activePlatform === 'all' || row.dataset.platform === activePlatform;
+        const tags = (row.dataset.tags ?? '').split('|');
+        const matchesTag = activeTag === 'all' || tags.includes(activeTag);
+        row.hidden = !(matchesQuery && matchesPlatform && matchesTag);
+        if (!row.hidden) visible += 1;
+      });
+      if (counter) counter.textContent = `显示 ${visible} 篇题解`;
+      if (empty) empty.hidden = visible !== 0;
+    };
+
+    const activate = (buttons: HTMLButtonElement[], selected: HTMLButtonElement) => {
+      buttons.forEach((button) => {
+        const active = button === selected;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+    };
+
+    platformButtons.forEach((button) => button.addEventListener('click', () => {
+      activePlatform = button.dataset.platform ?? 'all';
+      activate(platformButtons, button);
+      applyFilters();
+    }));
+    tagButtons.forEach((button) => button.addEventListener('click', () => {
+      activeTag = button.dataset.tag ?? 'all';
+      activate(tagButtons, button);
+      applyFilters();
+    }));
+    search?.addEventListener('input', applyFilters);
+  }
+</script>

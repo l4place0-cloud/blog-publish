@@ -1,0 +1,89 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tags from '../../components/Tags.astro';
+import { formatDate } from '../../lib/content';
+import {
+  getSolutions,
+  solutionPath,
+  solutionPlatform,
+  solutionPlatforms,
+  solutionTags,
+  solutionTitle,
+  type SolutionEntry,
+} from '../../lib/solutions';
+
+export async function getStaticPaths() {
+  const solutions = await getSolutions();
+  const paths = new Set<string>();
+  return solutions.map((solution) => {
+    const path = solutionPath(solution).replace(/^\/solutions\//, '');
+    if (paths.has(path)) throw new Error(`Duplicate solution route: ${path}`);
+    paths.add(path);
+    return { params: { path }, props: { solution, solutions } };
+  });
+}
+
+interface Props { solution: SolutionEntry; solutions: SolutionEntry[] }
+const { solution, solutions } = Astro.props as Props;
+const { Content, headings } = await render(solution);
+const title = solutionTitle(solution);
+const platform = solutionPlatform(solution);
+const platformInfo = solutionPlatforms[platform];
+const samePlatform = solutions.filter((entry) => solutionPlatform(entry) === platform);
+const current = samePlatform.findIndex((entry) => entry.id === solution.id);
+const newer = current > 0 ? samePlatform[current - 1] : undefined;
+const older = current < samePlatform.length - 1 ? samePlatform[current + 1] : undefined;
+const description = `${title} 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。`;
+---
+
+<BaseLayout title={title} description={description} type="article" publishedAt={solution.data.date}>
+  <article class="solution-detail shell">
+    <a class="back-link" href="/solutions">← 返回题解</a>
+    <header class="solution-detail-header">
+      <div>
+        <p class="eyebrow">{platformInfo.label} · {formatDate(solution.data.date)}</p>
+        <h1>{title}</h1>
+        <Tags tags={solutionTags(solution)} />
+      </div>
+      <aside class="solution-facts" aria-label="题目信息">
+        <div><span>平台</span><strong>{platformInfo.label}</strong></div>
+        <div><span>完成时间</span><time datetime={solution.data.date.toISOString()}>{formatDate(solution.data.date)}</time></div>
+        <a href={solution.data.source} target="_blank" rel="noreferrer">前往原题 <span aria-hidden="true">↗</span></a>
+      </aside>
+    </header>
+
+    <div class="solution-reading-grid">
+      <div class="prose solution-prose"><Content /></div>
+      {headings.length > 1 && (
+        <aside class="toc solution-toc" aria-label="题解目录">
+          <p>目录</p>
+          <ol>{headings.filter((heading) => heading.depth > 1 && heading.depth < 4).map((heading) => <li class={`depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol>
+        </aside>
+      )}
+    </div>
+
+    <nav class="pager solution-pager" aria-label="同平台相邻题解">
+      {newer ? <a href={solutionPath(newer)}><small>上一篇 · {platformInfo.label}</small>{solutionTitle(newer)}</a> : <span></span>}
+      {older && <a href={solutionPath(older)} style="text-align:right"><small>下一篇 · {platformInfo.label}</small>{solutionTitle(older)}</a>}
+    </nav>
+  </article>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.solution-prose pre').forEach((block) => {
+    const code = block.querySelector('code');
+    if (!code) return;
+    const button = document.createElement('button');
+    button.className = 'code-copy';
+    button.type = 'button';
+    button.textContent = '复制';
+    button.setAttribute('aria-label', '复制代码');
+    button.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code.textContent ?? '');
+      button.textContent = '已复制';
+      window.setTimeout(() => { button.textContent = '复制'; }, 1600);
+    });
+    block.append(button);
+  });
+</script>

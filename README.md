@@ -2,10 +2,11 @@
 
 一个以内容关系为核心的静态个人博客，使用 Astro、TypeScript、Content Collections、Markdown / MDX 与 Tailwind CSS 构建。
 
-站点包含三种节奏不同的内容：
+站点包含四种节奏不同的内容：
 
 - **文章**：完整、可长期阅读的主题内容。
 - **项目**：展示问题、角色、方案、过程与结果。
+- **题解**：从独立 Git 子模块读取的算法题解、复盘与代码。
 - **空间**：按时间流记录想法、进展、链接、图片、书影音和代码片段。
 
 站主身份、首页文案、各栏目标题与说明、联系信息、About、Now、页脚、语言、时区和站点 URL 全部集中在 `src/config/site.ts`。`astro.config.ts`、SEO、RSS 与页面会自动读取同一份配置；正式发布前只需修改这一处，再用自己的 Markdown 内容替换内容目录中的初始文章与项目。
@@ -21,6 +22,12 @@ pnpm dev
 
 开发服务器默认运行在 `http://localhost:4321`。
 
+首次克隆时建议同时初始化题解子模块：
+
+```bash
+git clone --recurse-submodules <博客仓库地址>
+```
+
 ## 使用 Obsidian 写作
 
 将 `src/content` 作为 Vault 在 Obsidian 中打开。仓库已启用核心 Templates 插件并配置 `Templates/` 模板目录，提供文章、项目及六种空间内容模板；图片附件默认保存在 `attachments/`。
@@ -30,7 +37,7 @@ pnpm dev
 ## 检查与构建
 
 ```bash
-pnpm astro check
+pnpm check
 pnpm build
 pnpm preview
 ```
@@ -48,12 +55,30 @@ src/
 │   ├── articles/           # 长文章 Markdown / MDX
 │   ├── projects/           # 项目案例 Markdown / MDX
 │   └── space/              # 轻量时间流 Markdown / MDX
-├── content.config.ts       # 三个集合的 schema 与条件校验
+├── content.config.ts       # 四个集合的 schema 与条件校验
 ├── layouts/                # 全站、文章与项目布局
 ├── lib/content.ts          # 查询、排序、路径与格式化工具
 ├── pages/                  # 页面路由、RSS 与 404
 └── styles/global.css       # Tailwind 入口、设计变量与全站样式
+sources/
+└── my-solve/               # 独立题解 Git 子模块
+scripts/
+└── sync-solutions.mjs      # 初始化、更新并校验题解内容
 ```
+
+## 更新题解
+
+题解原稿位于独立仓库 `sources/my-solve`，博客构建会直接读取其中五个平台目录，不会复制 Markdown。`@ROOT.md` 与 Obsidian 的 `KanBan.md` 不会发布。
+
+```bash
+pnpm solutions:check       # 初始化并校验当前锁定版本
+pnpm solutions:pull        # 增量拉取远端 main
+pnpm build:latest          # 拉取最新题解后构建
+```
+
+普通的 `pnpm build` 使用博客仓库当前锁定的子模块提交，适合可复现部署。`pnpm solutions:pull` 更新后，父仓库会显示 `sources/my-solve` 的 Gitlink 发生变化；确认内容无误后再提交该引用。
+
+题解列表位于 `/solutions`，支持题号、标题与标签搜索，以及平台和热门算法标签筛选。详情页地址根据原题链接生成，不依赖包含空格或中文的本地文件名。
 
 ## 添加文章
 
@@ -148,4 +173,4 @@ relatedArticle: article-file-name # 可选
 
 ## MVP 暂不包含
 
-搜索、标签聚合页、全站归档、空间类型筛选、自动相关文章推荐、空间独立 RSS、评论、Newsletter、图片灯箱，以及独立的 Now / Uses / Colophon 页面均留作后续扩展。当前实现不包含数据库、登录、CMS、SSR 或客户端框架运行时。
+全站搜索、标签聚合页、全站归档、空间类型筛选、自动相关文章推荐、空间独立 RSS、评论、Newsletter、图片灯箱，以及独立的 Now / Uses / Colophon 页面均留作后续扩展。当前实现不包含数据库、登录、CMS、SSR 或客户端框架运行时。
