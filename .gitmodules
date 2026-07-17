@@ -1,0 +1,3 @@
+[submodule "sources/my-solve"]
+	path = sources/my-solve
+	url = https://github.com/l4place0/my-solve.git
