@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.9"><meta name="theme-color" content="#f3efe5"><link rel="icon" href="/l4p-blog/favicon.svg" type="image/svg+xml"><script>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script><title>Codeforces Round 1034 (Div. 3) B — L4place</title><meta name="description" content="Codeforces Round 1034 (Div. 3) B 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><link rel="canonical" href="https://l4place0.github.io/l4p-blog/solutions/codeforces/2123/b/"><meta property="og:type" content="article"><meta property="og:title" content="Codeforces Round 1034 (Div. 3) B — L4place"><meta property="og:description" content="Codeforces Round 1034 (Div. 3) B 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta property="og:url" content="https://l4place0.github.io/l4p-blog/solutions/codeforces/2123/b/"><meta property="og:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Codeforces Round 1034 (Div. 3) B — L4place"><meta name="twitter:description" content="Codeforces Round 1034 (Div. 3) B 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta name="twitter:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="article:published_time" content="2025-12-30T00:00:00.000Z"><link rel="alternate" type="application/rss+xml" title="L4place 的文章" href="https://l4place0.github.io/l4p-blog/rss.xml"><link rel="stylesheet" href="/l4p-blog/_astro/BaseLayout.iJgDFQ-Y.css"></head><body><a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/l4p-blog/" aria-label="L4place，返回首页"><span>L.</span><span class="wordmark-name">L4place</span></a><button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航"><span></span><span></span></button><nav id="site-nav" class="site-nav" aria-label="主导航"><a href="/l4p-blog/articles">文章</a><a href="/l4p-blog/projects">项目</a><a href="/l4p-blog/solutions" aria-current="page">题解</a><a href="/l4p-blog/space">空间</a><a href="/l4p-blog/about">关于</a></nav><button class="icon-button theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span class="theme-icon" aria-hidden="true">◐</span></button><script>
+  (() => {
+    const button = document.querySelector('.theme-toggle');
+    button?.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script></div></header><script>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script><main id="main"><article class="solution-detail shell"><a class="back-link" href="/l4p-blog/solutions">← 返回题解</a><header class="solution-detail-header"><div><p class="eyebrow">Codeforces · 2025年12月30日</p><h1>Codeforces Round 1034 (Div. 3) B</h1></div><aside class="solution-facts" aria-label="题目信息"><div><span>平台</span><strong>Codeforces</strong></div><div><span>完成时间</span><time datetime="2025-12-30T00:00:00.000Z">2025年12月30日</time></div><a href="https://codeforces.com/contest/2123/problem/B" target="_blank" rel="noreferrer">前往原题 <span aria-hidden="true">↗</span></a></aside></header><div class="solution-reading-grid"><div class="prose solution-prose"><h2 id="题意">题意</h2>
+<p>见题面源链接。</p>
+<h2 id="思路">思路</h2>
+<ul>
+<li>当前题解主要依据代码流程整理：读入数据后构造必要状态，随后通过循环/条件分支逐步推出答案。</li>
+<li>完整实现见下方代码；后续复盘时可以把题目中的约束、状态定义和边界样例进一步补进本节。</li>
+</ul>
+<h2 id="关键点">关键点</h2>
+<ul>
+<li>明确输入规模与边界条件。</li>
+<li>对照代码中的循环、状态或数据结构，复盘为什么这样能覆盖全部情况。</li>
+</ul>
+<h2 id="复杂度">复杂度</h2>
+<ul>
+<li>时间复杂度：结合代码主循环与数据结构操作复盘。</li>
+<li>空间复杂度：结合数组、状态表或辅助容器规模复盘。</li>
+</ul>
+<h2 id="代码">代码</h2>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">using</span><span style="color:#D73A49;--shiki-dark:#F97583"> namespace</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> std</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">200005</span><span style="color:#24292E;--shiki-dark:#E1E4E8">];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> main</span><span style="color:#24292E;--shiki-dark:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#6F42C1;--shiki-dark:#B392F0">    ios</span><span style="color:#24292E;--shiki-dark:#E1E4E8">::</span><span style="color:#6F42C1;--shiki-dark:#B392F0">sync_with_stdio</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">false</span><span style="color:#24292E;--shiki-dark:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    cin.</span><span style="color:#6F42C1;--shiki-dark:#B392F0">tie</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">nullptr</span><span style="color:#24292E;--shiki-dark:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> t; cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> t;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    while</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (t</span><span style="color:#D73A49;--shiki-dark:#F97583">--</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n, j, k;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> k;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> max_val </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; i </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n; </span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">i) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[i];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            max_val </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> max</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(max_val, a[i]);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (k </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            cout </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> "Yes"</span><span style="color:#D73A49;--shiki-dark:#F97583"> &#x3C;&#x3C;</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> '</span><span style="color:#005CC5;--shiki-dark:#79B8FF">\n</span><span style="color:#032F62;--shiki-dark:#9ECBFF">'</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            continue</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> aj </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[j </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        cout </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (aj </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> max_val </span><span style="color:#D73A49;--shiki-dark:#F97583">?</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> "Yes"</span><span style="color:#D73A49;--shiki-dark:#F97583"> :</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> "No"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> '</span><span style="color:#005CC5;--shiki-dark:#79B8FF">\n</span><span style="color:#032F62;--shiki-dark:#9ECBFF">'</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre></div><aside class="toc solution-toc" aria-label="题解目录"><p>目录</p><ol><li class="depth-2"><a href="#题意">题意</a></li><li class="depth-2"><a href="#思路">思路</a></li><li class="depth-2"><a href="#关键点">关键点</a></li><li class="depth-2"><a href="#复杂度">复杂度</a></li><li class="depth-2"><a href="#代码">代码</a></li></ol></aside></div><nav class="pager solution-pager" aria-label="同平台相邻题解"><a href="/l4p-blog/solutions/codeforces/2123/a"><small>上一篇 · Codeforces</small>Codeforces Round 1034 (Div. 3) A</a></nav></article></main><footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-title">把想法做成东西，<br>再把过程写下来。</p><p class="muted">© 2026 L4place · build by astro</p></div><div class="footer-links" aria-label="外部链接"><a href="https://github.com/l4place0" rel="me">GitHub ↗</a><a href="mailto:helloworld@l4.place">Email ↗</a><a href="/l4p-blog/rss.xml">RSS ↗</a></div></div></footer></body></html><script type="module">document.querySelectorAll(`.solution-prose pre`).forEach(e=>{let t=e.querySelector(`code`);if(!t)return;let n=document.createElement(`button`);n.className=`code-copy`,n.type=`button`,n.textContent=`复制`,n.setAttribute(`aria-label`,`复制代码`),n.addEventListener(`click`,async()=>{await navigator.clipboard.writeText(t.textContent??``),n.textContent=`已复制`,window.setTimeout(()=>{n.textContent=`复制`},1600)}),e.append(n)});</script>

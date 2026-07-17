@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.9"><meta name="theme-color" content="#f3efe5"><link rel="icon" href="/l4p-blog/favicon.svg" type="image/svg+xml"><script>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script><title>Hello World — L4place</title><meta name="description" content="用于测试项目列表、项目详情、状态、角色与技术标签展示的示例项目。"><link rel="canonical" href="https://l4place0.github.io/l4p-blog/projects/hello-world/"><meta property="og:type" content="website"><meta property="og:title" content="Hello World — L4place"><meta property="og:description" content="用于测试项目列表、项目详情、状态、角色与技术标签展示的示例项目。"><meta property="og:url" content="https://l4place0.github.io/l4p-blog/projects/hello-world/"><meta property="og:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Hello World — L4place"><meta name="twitter:description" content="用于测试项目列表、项目详情、状态、角色与技术标签展示的示例项目。"><meta name="twitter:image" content="https://l4place0.github.io/l4p-blog/og.png"><link rel="alternate" type="application/rss+xml" title="L4place 的文章" href="https://l4place0.github.io/l4p-blog/rss.xml"><link rel="stylesheet" href="/l4p-blog/_astro/BaseLayout.iJgDFQ-Y.css"></head><body><a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/l4p-blog/" aria-label="L4place，返回首页"><span>L.</span><span class="wordmark-name">L4place</span></a><button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航"><span></span><span></span></button><nav id="site-nav" class="site-nav" aria-label="主导航"><a href="/l4p-blog/articles">文章</a><a href="/l4p-blog/projects" aria-current="page">项目</a><a href="/l4p-blog/solutions">题解</a><a href="/l4p-blog/space">空间</a><a href="/l4p-blog/about">关于</a></nav><button class="icon-button theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span class="theme-icon" aria-hidden="true">◐</span></button><script>
+  (() => {
+    const button = document.querySelector('.theme-toggle');
+    button?.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script></div></header><script>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script><main id="main"><article class="project-page shell"><a class="back-link" href="/l4p-blog/projects">← 返回项目</a><header class="project-header"><div><p class="eyebrow">实验项目</p><h1>Hello World</h1><p class="lead">用于测试项目列表、项目详情、状态、角色与技术标签展示的示例项目。</p><div class="project-buttons"></div></div><dl class="project-facts"><div><dt>时间</dt><dd>2026年7月15日 — 现在</dd></div><div><dt>角色</dt><dd>创作者</dd></div><div><dt>技术</dt><dd><ul class="tag-list" aria-label="标签"><li>Astro</li><li>TypeScript</li></ul></dd></div></dl></header><div class="prose project-prose"><p>这是博客的第一个测试项目。</p>
+<h2 id="项目简介">项目简介</h2>
+<p>这个项目用于确认项目卡片、详情布局和内容展示能够正常工作。添加真实项目时，可以复制该文件并修改 Front Matter 与正文。</p>
+<h2 id="当前状态">当前状态</h2>
+<p>页面结构已就绪，等待替换为真实的项目背景、过程与成果。</p></div><div><p style="margin-top:42px"><a class="back-link" href="/l4p-blog/projects/hello-world">本页永久链接：/l4p-blog/projects/hello-world</a></p></div></article></main><footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-title">把想法做成东西，<br>再把过程写下来。</p><p class="muted">© 2026 L4place · build by astro</p></div><div class="footer-links" aria-label="外部链接"><a href="https://github.com/l4place0" rel="me">GitHub ↗</a><a href="mailto:helloworld@l4.place">Email ↗</a><a href="/l4p-blog/rss.xml">RSS ↗</a></div></div></footer></body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.9"><meta name="theme-color" content="#f3efe5"><link rel="icon" href="/l4p-blog/favicon.svg" type="image/svg+xml"><script>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script><title>Codeforces Round 1027 (Div. 3) D — L4place</title><meta name="description" content="Codeforces Round 1027 (Div. 3) D 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><link rel="canonical" href="https://l4place0.github.io/l4p-blog/solutions/codeforces/2114/d/"><meta property="og:type" content="article"><meta property="og:title" content="Codeforces Round 1027 (Div. 3) D — L4place"><meta property="og:description" content="Codeforces Round 1027 (Div. 3) D 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta property="og:url" content="https://l4place0.github.io/l4p-blog/solutions/codeforces/2114/d/"><meta property="og:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Codeforces Round 1027 (Div. 3) D — L4place"><meta name="twitter:description" content="Codeforces Round 1027 (Div. 3) D 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta name="twitter:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="article:published_time" content="2025-12-30T00:00:00.000Z"><link rel="alternate" type="application/rss+xml" title="L4place 的文章" href="https://l4place0.github.io/l4p-blog/rss.xml"><link rel="stylesheet" href="/l4p-blog/_astro/BaseLayout.iJgDFQ-Y.css"></head><body><a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/l4p-blog/" aria-label="L4place，返回首页"><span>L.</span><span class="wordmark-name">L4place</span></a><button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航"><span></span><span></span></button><nav id="site-nav" class="site-nav" aria-label="主导航"><a href="/l4p-blog/articles">文章</a><a href="/l4p-blog/projects">项目</a><a href="/l4p-blog/solutions" aria-current="page">题解</a><a href="/l4p-blog/space">空间</a><a href="/l4p-blog/about">关于</a></nav><button class="icon-button theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span class="theme-icon" aria-hidden="true">◐</span></button><script>
+  (() => {
+    const button = document.querySelector('.theme-toggle');
+    button?.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script></div></header><script>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script><main id="main"><article class="solution-detail shell"><a class="back-link" href="/l4p-blog/solutions">← 返回题解</a><header class="solution-detail-header"><div><p class="eyebrow">Codeforces · 2025年12月30日</p><h1>Codeforces Round 1027 (Div. 3) D</h1><ul class="tag-list" aria-label="标签"><li>图论</li></ul></div><aside class="solution-facts" aria-label="题目信息"><div><span>平台</span><strong>Codeforces</strong></div><div><span>完成时间</span><time datetime="2025-12-30T00:00:00.000Z">2025年12月30日</time></div><a href="https://codeforces.com/contest/2114/problem/D" target="_blank" rel="noreferrer">前往原题 <span aria-hidden="true">↗</span></a></aside></header><div class="solution-reading-grid"><div class="prose solution-prose"><h2 id="题意">题意</h2>
+<p>见题面源链接。</p>
+<h2 id="思路">思路</h2>
+<p>“D. Come a Little Closer” 修正版：
+思路：
+对每个测试用例，先一次遍历收集所有点的：
+x_min, x_min2, cntMinX, x_max, x_max2, cntMaxX;
+y_min, y_min2, cntMinY, y_max, y_max2, cntMaxY;
+然后再对每只怪物 i 枚举“把它移动”的情况：</p>
+<ol>
+<li>删除它后，剩余 n-1 只怪物的最小包围矩形边界 (xL, xR, yL, yR)；</li>
+<li>记 w = xR - xL + 1, h = yR - yL + 1,
+如果 n-1 &#x3C; w<em>h，则答案候选 = w</em>h；否则（n-1 == w*h），候选 = min((w+1)<em>h, w</em>(h+1))。
+取所有候选最小即为最终答案。
+时间复杂度：每个测试用例 O(n)，总和 ∑n ≤ 2×10^5。</li>
+</ol>
+<p>n=1 时单独处理：无论如何也得选一个 1×1 的矩形</p>
+<p>初始化 x 方向的极值与次极值及其计数</p>
+<p>初始化 y 方向的极值与次极值及其计数</p>
+<p>第一次遍历：统计 x_min, x_min2, cntMinX, x_max, x_max2, cntMaxX；同理 y</p>
+<p>—— 处理 x 方向最小值／次最小值 及 计数 ——</p>
+<p>—— 处理 x 方向最大值／次最大值 及 计数 ——</p>
+<p>—— 处理 y 方向最小值／次最小值 及 计数 ——</p>
+<p>—— 处理 y 方向最大值／次最大值 及 计数 ——</p>
+<p>枚举“删除第 i 只怪物”后需要的最小代价，取最小</p>
+<ol>
+<li>计算删除它后，剩余点的 x 左边界 new_xL</li>
+</ol>
+<p>x == x_min</p>
+<ol start="2">
+<li>删除它后，剩余点的 x 右边界 new_xR</li>
+</ol>
+<p>x == x_max</p>
+<ol start="3">
+<li>
+<p>删除它后，剩余点的 y 下边界 new_yL</p>
+</li>
+<li>
+<p>删除它后，剩余点的 y 上边界 new_yR</p>
+</li>
+</ol>
+<p>计算剩余 n-1 个点的包围矩形尺寸</p>
+<p>如果 (n-1) &#x3C; w*h，说明矩形内部有空格，不需要扩充</p>
+<p>否则 (n-1) == w*h，矩形被完全占满，必须在 w 或 h 上扩充 1</p>
+<p>拆不开只能扩充</p>
+<h2 id="关键点">关键点</h2>
+<ul>
+<li>图论：复盘该技巧在本题中承担的角色。</li>
+</ul>
+<h2 id="复杂度">复杂度</h2>
+<ul>
+<li>时间复杂度：结合代码主循环与数据结构操作复盘。</li>
+<li>空间复杂度：结合数组、状态表或辅助容器规模复盘。</li>
+</ul>
+<h2 id="代码">代码</h2>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;bits/stdc++.h></span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">using</span><span style="color:#D73A49;--shiki-dark:#F97583"> namespace</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> std</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">/*</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">  “D. Come a Little Closer” 修正版：</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">  思路：</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">    对每个测试用例，先一次遍历收集所有点的：</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">      x_min, x_min2, cntMinX, x_max, x_max2, cntMaxX;</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">      y_min, y_min2, cntMinY, y_max, y_max2, cntMaxY;</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">    然后再对每只怪物 i 枚举“把它移动”的情况：</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">      1. 删除它后，剩余 n-1 只怪物的最小包围矩形边界 (xL, xR, yL, yR)；</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">      2. 记 w = xR - xL + 1, h = yR - yL + 1,</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">         如果 n-1 &#x3C; w*h，则答案候选 = w*h；否则（n-1 == w*h），候选 = min((w+1)*h, w*(h+1))。</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">    取所有候选最小即为最终答案。</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">  时间复杂度：每个测试用例 O(n)，总和 ∑n ≤ 2×10^5。</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">*/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> main</span><span style="color:#24292E;--shiki-dark:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#6F42C1;--shiki-dark:#B392F0">    ios</span><span style="color:#24292E;--shiki-dark:#E1E4E8">::</span><span style="color:#6F42C1;--shiki-dark:#B392F0">sync_with_stdio</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">false</span><span style="color:#24292E;--shiki-dark:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    cin.</span><span style="color:#6F42C1;--shiki-dark:#B392F0">tie</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">nullptr</span><span style="color:#24292E;--shiki-dark:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> T;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> T;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    while</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (T</span><span style="color:#D73A49;--shiki-dark:#F97583">--</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        vector</span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long></span><span style="color:#6F42C1;--shiki-dark:#B392F0"> X</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(n), </span><span style="color:#6F42C1;--shiki-dark:#B392F0">Y</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(n);</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; i </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n; i</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            cin </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> X[i] </span><span style="color:#D73A49;--shiki-dark:#F97583">>></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> Y[i];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // n=1 时单独处理：无论如何也得选一个 1×1 的矩形</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (n </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            cout </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#D73A49;--shiki-dark:#F97583"> &#x3C;&#x3C;</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> "</span><span style="color:#005CC5;--shiki-dark:#79B8FF">\n</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            continue</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 初始化 x 方向的极值与次极值及其计数</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        const</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> INF </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#D73A49;--shiki-dark:#F97583">e</span><span style="color:#005CC5;--shiki-dark:#79B8FF">18</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> INF,  x_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> INF;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> -</span><span style="color:#24292E;--shiki-dark:#E1E4E8">INF, x_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> -</span><span style="color:#24292E;--shiki-dark:#E1E4E8">INF;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> cntMinX </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, cntMaxX </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 初始化 y 方向的极值与次极值及其计数</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> INF,  y_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> INF;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> -</span><span style="color:#24292E;--shiki-dark:#E1E4E8">INF, y_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> -</span><span style="color:#24292E;--shiki-dark:#E1E4E8">INF;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> cntMinY </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, cntMaxY </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 第一次遍历：统计 x_min, x_min2, cntMinX, x_max, x_max2, cntMaxX；同理 y</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; i </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n; i</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> X[i], y </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> Y[i];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // —— 处理 x 方向最小值／次最小值 及 计数 ——</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_min  </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMinX </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMinX</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min2) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // —— 处理 x 方向最大值／次最大值 及 计数 ——</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_max  </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMaxX </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMaxX</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max2) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                x_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // —— 处理 y 方向最小值／次最小值 及 计数 ——</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_min  </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMinY </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMinY</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min2) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_min2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // —— 处理 y 方向最大值／次最大值 及 计数 ——</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_max  </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMaxY </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cntMaxY</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max2) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                y_max2 </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 枚举“删除第 i 只怪物”后需要的最小代价，取最小</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> answer </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> LLONG_MAX;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; i </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n; i</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> X[i], y </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> Y[i];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 1. 计算删除它后，剩余点的 x 左边界 new_xL</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_xL;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">!=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                new_xL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                // x == x_min</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (cntMinX </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) new_xL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                else</span><span style="color:#24292E;--shiki-dark:#E1E4E8">              new_xL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_min2;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 2. 删除它后，剩余点的 x 右边界 new_xR</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_xR;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (x </span><span style="color:#D73A49;--shiki-dark:#F97583">!=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                new_xR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                // x == x_max</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (cntMaxX </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) new_xR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                else</span><span style="color:#24292E;--shiki-dark:#E1E4E8">              new_xR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> x_max2;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 3. 删除它后，剩余点的 y 下边界 new_yL</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_yL;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">!=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                new_yL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (cntMinY </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) new_yL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                else</span><span style="color:#24292E;--shiki-dark:#E1E4E8">              new_yL </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_min2;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 4. 删除它后，剩余点的 y 上边界 new_yR</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_yR;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (y </span><span style="color:#D73A49;--shiki-dark:#F97583">!=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                new_yR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (cntMaxY </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) new_yR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                else</span><span style="color:#24292E;--shiki-dark:#E1E4E8">              new_yR </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> y_max2;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 计算剩余 n-1 个点的包围矩形尺寸</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> w </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_xR </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_xL </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span><span style="color:#6A737D;--shiki-dark:#6A737D">  // 宽</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> h </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_yR </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> new_yL </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span><span style="color:#6A737D;--shiki-dark:#6A737D">  // 高</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> area_base </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> w </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> h;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 如果 (n-1) &#x3C; w*h，说明矩形内部有空格，不需要扩充</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 否则 (n-1) == w*h，矩形被完全占满，必须在 w 或 h 上扩充 1</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> cost_i;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ((</span><span style="color:#D73A49;--shiki-dark:#F97583">long</span><span style="color:#D73A49;--shiki-dark:#F97583"> long</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)(n </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> area_base) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cost_i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> area_base;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            } </span><span style="color:#D73A49;--shiki-dark:#F97583">else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                // 拆不开只能扩充</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                cost_i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> min</span><span style="color:#24292E;--shiki-dark:#E1E4E8">( (w </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> h,  w </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (h </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) );</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            answer </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> min</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(answer, cost_i);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        cout </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> answer </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;&#x3C;</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> "</span><span style="color:#005CC5;--shiki-dark:#79B8FF">\n</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre></div><aside class="toc solution-toc" aria-label="题解目录"><p>目录</p><ol><li class="depth-2"><a href="#题意">题意</a></li><li class="depth-2"><a href="#思路">思路</a></li><li class="depth-2"><a href="#关键点">关键点</a></li><li class="depth-2"><a href="#复杂度">复杂度</a></li><li class="depth-2"><a href="#代码">代码</a></li></ol></aside></div><nav class="pager solution-pager" aria-label="同平台相邻题解"><a href="/l4p-blog/solutions/codeforces/2114/c"><small>上一篇 · Codeforces</small>Codeforces Round 1027 (Div. 3) C</a><a href="/l4p-blog/solutions/codeforces/2123/a" style="text-align:right"><small>下一篇 · Codeforces</small>Codeforces Round 1034 (Div. 3) A</a></nav></article></main><footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-title">把想法做成东西，<br>再把过程写下来。</p><p class="muted">© 2026 L4place · build by astro</p></div><div class="footer-links" aria-label="外部链接"><a href="https://github.com/l4place0" rel="me">GitHub ↗</a><a href="mailto:helloworld@l4.place">Email ↗</a><a href="/l4p-blog/rss.xml">RSS ↗</a></div></div></footer></body></html><script type="module">document.querySelectorAll(`.solution-prose pre`).forEach(e=>{let t=e.querySelector(`code`);if(!t)return;let n=document.createElement(`button`);n.className=`code-copy`,n.type=`button`,n.textContent=`复制`,n.setAttribute(`aria-label`,`复制代码`),n.addEventListener(`click`,async()=>{await navigator.clipboard.writeText(t.textContent??``),n.textContent=`已复制`,window.setTimeout(()=>{n.textContent=`复制`},1600)}),e.append(n)});</script>

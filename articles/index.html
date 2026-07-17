@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.9"><meta name="theme-color" content="#f3efe5"><link rel="icon" href="/l4p-blog/favicon.svg" type="image/svg+xml"><script>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script><title>文章 — L4place</title><meta name="description" content="完整、经过整理、适合深度阅读的技术与产品文章。"><link rel="canonical" href="https://l4place0.github.io/l4p-blog/articles/"><meta property="og:type" content="website"><meta property="og:title" content="文章 — L4place"><meta property="og:description" content="完整、经过整理、适合深度阅读的技术与产品文章。"><meta property="og:url" content="https://l4place0.github.io/l4p-blog/articles/"><meta property="og:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="文章 — L4place"><meta name="twitter:description" content="完整、经过整理、适合深度阅读的技术与产品文章。"><meta name="twitter:image" content="https://l4place0.github.io/l4p-blog/og.png"><link rel="alternate" type="application/rss+xml" title="L4place 的文章" href="https://l4place0.github.io/l4p-blog/rss.xml"><link rel="stylesheet" href="/l4p-blog/_astro/BaseLayout.iJgDFQ-Y.css"></head><body><a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/l4p-blog/" aria-label="L4place，返回首页"><span>L.</span><span class="wordmark-name">L4place</span></a><button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航"><span></span><span></span></button><nav id="site-nav" class="site-nav" aria-label="主导航"><a href="/l4p-blog/articles" aria-current="page">文章</a><a href="/l4p-blog/projects">项目</a><a href="/l4p-blog/solutions">题解</a><a href="/l4p-blog/space">空间</a><a href="/l4p-blog/about">关于</a></nav><button class="icon-button theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span class="theme-icon" aria-hidden="true">◐</span></button><script>
+  (() => {
+    const button = document.querySelector('.theme-toggle');
+    button?.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script></div></header><script>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script><main id="main"><header class="page-header"><div class="shell page-header-grid"><div><p class="eyebrow">Articles</p><h1>文章</h1></div><p>我所思考的.</p></div></header><div class="shell page-content"><div style="margin-bottom: 45px"><article class="article-card featured"><div class="article-meta"><time datetime="2026-07-15T00:00:00.000Z">2026年7月15日</time><span>1 分钟</span></div><h3><a href="/l4p-blog/articles/hello-world">Hello World</a></h3><p>用于测试文章列表、详情页、Markdown 排版与代码高亮的第一篇文章。</p><ul class="tag-list" aria-label="标签"><li>测试</li></ul></article></div><div class="article-list"></div></div></main><footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-title">把想法做成东西，<br>再把过程写下来。</p><p class="muted">© 2026 L4place · build by astro</p></div><div class="footer-links" aria-label="外部链接"><a href="https://github.com/l4place0" rel="me">GitHub ↗</a><a href="mailto:helloworld@l4.place">Email ↗</a><a href="/l4p-blog/rss.xml">RSS ↗</a></div></div></footer></body></html>

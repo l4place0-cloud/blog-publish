@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.9"><meta name="theme-color" content="#f3efe5"><link rel="icon" href="/l4p-blog/favicon.svg" type="image/svg+xml"><script>
+      (() => { const saved = localStorage.getItem('theme'); if (saved) document.documentElement.dataset.theme = saved; })();
+    </script><title>LC00016. 3sum Closest — L4place</title><meta name="description" content="LC00016. 3sum Closest 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><link rel="canonical" href="https://l4place0.github.io/l4p-blog/solutions/leetcode/3sum-closest/"><meta property="og:type" content="article"><meta property="og:title" content="LC00016. 3sum Closest — L4place"><meta property="og:description" content="LC00016. 3sum Closest 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta property="og:url" content="https://l4place0.github.io/l4p-blog/solutions/leetcode/3sum-closest/"><meta property="og:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="LC00016. 3sum Closest — L4place"><meta name="twitter:description" content="LC00016. 3sum Closest 的题意拆解、解题思路、复杂度分析和 C++ 代码实现。"><meta name="twitter:image" content="https://l4place0.github.io/l4p-blog/og.png"><meta property="article:published_time" content="2026-02-09T00:00:00.000Z"><link rel="alternate" type="application/rss+xml" title="L4place 的文章" href="https://l4place0.github.io/l4p-blog/rss.xml"><link rel="stylesheet" href="/l4p-blog/_astro/BaseLayout.iJgDFQ-Y.css"></head><body><a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/l4p-blog/" aria-label="L4place，返回首页"><span>L.</span><span class="wordmark-name">L4place</span></a><button class="menu-toggle icon-button" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开导航"><span></span><span></span></button><nav id="site-nav" class="site-nav" aria-label="主导航"><a href="/l4p-blog/articles">文章</a><a href="/l4p-blog/projects">项目</a><a href="/l4p-blog/solutions" aria-current="page">题解</a><a href="/l4p-blog/space">空间</a><a href="/l4p-blog/about">关于</a></nav><button class="icon-button theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span class="theme-icon" aria-hidden="true">◐</span></button><script>
+  (() => {
+    const button = document.querySelector('.theme-toggle');
+    button?.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script></div></header><script>
+  (() => {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const close = () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.setAttribute('aria-label', '打开导航');
+      nav?.classList.remove('is-open');
+    };
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      nav?.classList.toggle('is-open', !open);
+    });
+    nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+  })();
+</script><main id="main"><article class="solution-detail shell"><a class="back-link" href="/l4p-blog/solutions">← 返回题解</a><header class="solution-detail-header"><div><p class="eyebrow">LeetCode · 2026年2月9日</p><h1>LC00016. 3sum Closest</h1><ul class="tag-list" aria-label="标签"><li>图论</li><li>排序</li><li>双指针</li></ul></div><aside class="solution-facts" aria-label="题目信息"><div><span>平台</span><strong>LeetCode</strong></div><div><span>完成时间</span><time datetime="2026-02-09T00:00:00.000Z">2026年2月9日</time></div><a href="https://leetcode.cn/problems/3sum-closest/" target="_blank" rel="noreferrer">前往原题 <span aria-hidden="true">↗</span></a></aside></header><div class="solution-reading-grid"><div class="prose solution-prose"><h2 id="题意">题意</h2>
+<p>见题面源链接。</p>
+<h2 id="思路">思路</h2>
+<p>✔ 顺序无关/置换不变性 -> 考虑排序？</p>
+<p>❌ 排序后考虑使用头尾双指针，此时题目转化为在剩余的集合中找到一个值，使其和前者的和相加最接近target -> 逆向思维，将题目变为 target - 前者的和，然后在剩余的数组中二分查找。</p>
+<p>⚠️ 修正：对于 3Sum 问题，不能直接在整个数组上只用一对双指针。必须是 Loop + 双指针。即：固定一个，剩下的范围用双指针。</p>
+<p>💡 提示：在这个问题里，双指针其实是优于二分查找的。固定 i 和 j，对 k 进行二分查找，复杂度是 $O(N^2 \log N)$。固定 i，对 j, k 进行双指针扫描，复杂度是 $O(N^2)$。显然双指针更快。</p>
+<p>✔ 不动点：双指针始终朝着让 candidate 更接近 target 的方向前进。</p>
+<ol>
+<li>排序：这是使用双指针的前提</li>
+</ol>
+<p>初始化结果，取前三个数的和作为初始值，避免 INT_MIN/MAX 溢出问题</p>
+<ol start="2">
+<li>固定第一个数 nums[i]</li>
+</ol>
+<p>优化：如果当前数字和上一个数字相同，可以跳过（去重），但在 Closest 题中不是必须的，</p>
+<p>且为了逻辑简单可以省略，加上能微小提升效率。</p>
+<ol start="3">
+<li>双指针寻找另外两个数</li>
+</ol>
+<p>更新最接近的结果</p>
+<p>移动指针逻辑</p>
+<p>优化：跳过重复元素</p>
+<p>while (L &#x3C; R &#x26;&#x26; nums[L] == nums[L-1]) L++;</p>
+<p>while (L &#x3C; R &#x26;&#x26; nums[R] == nums[R+1]) R—;</p>
+<h2 id="关键点">关键点</h2>
+<ul>
+<li>图论：复盘该技巧在本题中承担的角色。</li>
+<li>排序：复盘该技巧在本题中承担的角色。</li>
+<li>双指针：复盘该技巧在本题中承担的角色。</li>
+</ul>
+<h2 id="复杂度">复杂度</h2>
+<ul>
+<li>时间复杂度：结合代码主循环与数据结构操作复盘。</li>
+<li>空间复杂度：结合数组、状态表或辅助容器规模复盘。</li>
+</ul>
+<h2 id="代码">代码</h2>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;vector></span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;algorithm></span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;cmath></span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">#include</span><span style="color:#032F62;--shiki-dark:#9ECBFF"> &#x3C;climits></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">using</span><span style="color:#D73A49;--shiki-dark:#F97583"> namespace</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> std</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">// ✔ 顺序无关/置换不变性 -> 考虑排序？</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">// ❌ 排序后考虑使用头尾双指针，此时题目转化为在剩余的集合中找到一个值，使其和前者的和相加最接近target -> 逆向思维，将题目变为 target - 前者的和，然后在剩余的数组中二分查找。</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">// ⚠️ 修正：对于 3Sum 问题，不能直接在整个数组上只用一对双指针。必须是 Loop + 双指针。即：固定一个，剩下的范围用双指针。</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">// 💡 提示：在这个问题里，双指针其实是优于二分查找的。固定 i 和 j，对 k 进行二分查找，复杂度是 $O(N^2 \log N)$。固定 i，对 j, k 进行双指针扫描，复杂度是 $O(N^2)$。显然双指针更快。</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">// ✔ 不动点：双指针始终朝着让 candidate 更接近 target 的方向前进。</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">class</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> Solution</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">public:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    int</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> threeSumClosest</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#6F42C1;--shiki-dark:#B392F0">vector</span><span style="color:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">></span><span style="color:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="color:#E36209;--shiki-dark:#FFAB70"> nums</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#E36209;--shiki-dark:#FFAB70"> target</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 1. 排序：这是使用双指针的前提</span></span>
+<span class="line"><span style="color:#6F42C1;--shiki-dark:#B392F0">        sort</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(nums.</span><span style="color:#6F42C1;--shiki-dark:#B392F0">begin</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(), nums.</span><span style="color:#6F42C1;--shiki-dark:#B392F0">end</span><span style="color:#24292E;--shiki-dark:#E1E4E8">());</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums.</span><span style="color:#6F42C1;--shiki-dark:#B392F0">size</span><span style="color:#24292E;--shiki-dark:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 初始化结果，取前三个数的和作为初始值，避免 INT_MIN/MAX 溢出问题</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> closest_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">        // 2. 固定第一个数 nums[i]</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; i </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">; </span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">i) {</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 优化：如果当前数字和上一个数字相同，可以跳过（去重），但在 Closest 题中不是必须的，</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 且为了逻辑简单可以省略，加上能微小提升效率。</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (i </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#D73A49;--shiki-dark:#F97583"> &#x26;&#x26;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[i] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[i</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) </span><span style="color:#D73A49;--shiki-dark:#F97583">continue</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> L </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> R </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> n </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            </span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">            // 3. 双指针寻找另外两个数</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">            while</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (L </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> R) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                int</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> current_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[i] </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[L] </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> nums[R];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                </span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                // 更新最接近的结果</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#6F42C1;--shiki-dark:#B392F0">abs</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(current_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target) </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> abs</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(closest_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target)) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                    closest_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> current_sum;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                </span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                // 移动指针逻辑</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (current_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target) {</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">                    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target;</span><span style="color:#6A737D;--shiki-dark:#6A737D"> // 距离为0，肯定是最接近的</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                } </span><span style="color:#D73A49;--shiki-dark:#F97583">else</span><span style="color:#D73A49;--shiki-dark:#F97583"> if</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (current_sum </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                    L</span><span style="color:#D73A49;--shiki-dark:#F97583">++</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span><span style="color:#6A737D;--shiki-dark:#6A737D"> // 和太小，左指针右移变大</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                    // 优化：跳过重复元素</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                    // while (L &#x3C; R &#x26;&#x26; nums[L] == nums[L-1]) L++; </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                } </span><span style="color:#D73A49;--shiki-dark:#F97583">else</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                    R</span><span style="color:#D73A49;--shiki-dark:#F97583">--</span><span style="color:#24292E;--shiki-dark:#E1E4E8">;</span><span style="color:#6A737D;--shiki-dark:#6A737D"> // 和太大，右指针左移变小</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                    // 优化：跳过重复元素</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D">                    // while (L &#x3C; R &#x26;&#x26; nums[R] == nums[R+1]) R--;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">                }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">            }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">        return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> closest_sum;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">};</span></span></code></pre></div><aside class="toc solution-toc" aria-label="题解目录"><p>目录</p><ol><li class="depth-2"><a href="#题意">题意</a></li><li class="depth-2"><a href="#思路">思路</a></li><li class="depth-2"><a href="#关键点">关键点</a></li><li class="depth-2"><a href="#复杂度">复杂度</a></li><li class="depth-2"><a href="#代码">代码</a></li></ol></aside></div><nav class="pager solution-pager" aria-label="同平台相邻题解"><a href="/l4p-blog/solutions/leetcode/palindrome-number"><small>上一篇 · LeetCode</small>LC00009. Palindrome Number</a><a href="/l4p-blog/solutions/leetcode/4sum" style="text-align:right"><small>下一篇 · LeetCode</small>LC00018. 4sum</a></nav></article></main><footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-title">把想法做成东西，<br>再把过程写下来。</p><p class="muted">© 2026 L4place · build by astro</p></div><div class="footer-links" aria-label="外部链接"><a href="https://github.com/l4place0" rel="me">GitHub ↗</a><a href="mailto:helloworld@l4.place">Email ↗</a><a href="/l4p-blog/rss.xml">RSS ↗</a></div></div></footer></body></html><script type="module">document.querySelectorAll(`.solution-prose pre`).forEach(e=>{let t=e.querySelector(`code`);if(!t)return;let n=document.createElement(`button`);n.className=`code-copy`,n.type=`button`,n.textContent=`复制`,n.setAttribute(`aria-label`,`复制代码`),n.addEventListener(`click`,async()=>{await navigator.clipboard.writeText(t.textContent??``),n.textContent=`已复制`,window.setTimeout(()=>{n.textContent=`复制`},1600)}),e.append(n)});</script>

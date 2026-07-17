@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://l4p.github.io/sitemap-index.xml
