@@ -51,9 +51,12 @@ pnpm preview
 ```text
 SITE_URL=https://l4place0.github.io
 BASE_PATH=/l4p-blog
+PAGES_DEPLOY_MODE=actions
 ```
 
 以后切换到个人域名时，只需将 `SITE_URL` 改为个人域名、将 `BASE_PATH` 改为 `/`，再完成 Pages 自定义域名与 DNS 配置。站内导航、静态资源、RSS、Canonical URL 和 Sitemap 会在下一次构建时自动切换，不需要批量修改页面链接。
+
+`PAGES_DEPLOY_MODE` 设为 `actions` 时才会启动 Actions 部署任务；使用分支发布作为临时托管方案时可设为 `branch`，避免重复启动工作流。
 
 ## 主要目录
 
