@@ -16,6 +16,7 @@
     "solutions:pull": "node scripts/sync-solutions.mjs --pull"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "7.2.1",
     "@astrojs/mdx": "^7.0.3",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
