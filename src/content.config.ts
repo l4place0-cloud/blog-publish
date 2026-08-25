@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const articles = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './sources/l4p-blog-content/articles' }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
@@ -19,7 +19,7 @@ const articles = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './sources/l4p-blog-content/projects' }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
@@ -40,7 +40,7 @@ const projects = defineCollection({
 });
 
 const space = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/space' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './sources/l4p-blog-content/space' }),
   schema: ({ image }) => z.object({
     type: z.enum(['thought', 'progress', 'link', 'photo', 'media', 'snippet']),
     publishedAt: z.coerce.date(),

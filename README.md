@@ -22,7 +22,7 @@ pnpm dev
 
 开发服务器默认运行在 `http://localhost:4321`。
 
-首次克隆时建议同时初始化题解子模块：
+首次克隆时建议同时初始化两个内容子模块：
 
 ```bash
 git clone --recurse-submodules <博客仓库地址>
@@ -30,7 +30,7 @@ git clone --recurse-submodules <博客仓库地址>
 
 ## 使用 Obsidian 写作
 
-将 `src/content` 作为 Vault 在 Obsidian 中打开。仓库已启用核心 Templates 插件并配置 `Templates/` 模板目录，提供文章、项目及六种空间内容模板；图片附件默认保存在 `attachments/`。
+文章、项目和空间内容位于独立仓库 `l4place0/l4p-blog-content`，将该仓库根目录作为 Vault 在 Obsidian 中打开。题解内容继续由 `l4place0/my-solve` 独立维护。
 
 推荐流程：在 `articles/`、`projects/` 或 `space/` 中先创建以英文 slug 命名的文件，然后通过命令面板执行“模板：插入模板”，选择对应模板。更完整的说明见 Vault 根目录中的 `写作说明.md`。
 
@@ -49,7 +49,7 @@ pnpm preview
 `.github/workflows/deploy.yml` 会在 `main` 更新后自动构建并发布 GitHub Pages。部署地址和项目路径不硬编码在页面中，而是由仓库变量控制：
 
 ```text
-SITE_URL=https://l4place0.github.io
+SITE_URL=https://l4place0-cloud.github.io
 BASE_PATH=/l4p-blog
 PAGES_DEPLOY_MODE=actions
 ```
@@ -65,38 +65,46 @@ src/
 ├── assets/                 # 由 Astro 优化的本地图片
 ├── components/             # 导航、SEO、内容卡片与关联内容
 ├── config/site.ts          # 站主信息、链接、Now 与状态文案
-├── content/
-│   ├── articles/           # 长文章 Markdown / MDX
-│   ├── projects/           # 项目案例 Markdown / MDX
-│   └── space/              # 轻量时间流 Markdown / MDX
 ├── content.config.ts       # 四个集合的 schema 与条件校验
 ├── layouts/                # 全站、文章与项目布局
 ├── lib/content.ts          # 查询、排序、路径与格式化工具
 ├── pages/                  # 页面路由、RSS 与 404
 └── styles/global.css       # Tailwind 入口、设计变量与全站样式
 sources/
-└── my-solve/               # 独立题解 Git 子模块
+├── l4p-blog-content/       # 文章、项目和空间内容子模块
+└── my-solve/               # 题解内容子模块
 scripts/
-└── sync-solutions.mjs      # 初始化、更新并校验题解内容
+└── sync-content.mjs        # 初始化、更新并校验两个内容源
 ```
+
+## 更新博客内容
+
+文章、项目和空间原稿位于 `sources/l4p-blog-content`。内容仓库推送完成后，在展示仓库中运行：
+
+```bash
+pnpm content:pull
+pnpm build
+```
+
+检查构建结果后提交两个 submodule 的 Gitlink 变化，即可触发对应内容版本的可复现部署。
 
 ## 更新题解
 
 题解原稿位于独立仓库 `sources/my-solve`，博客构建会直接读取其中五个平台目录，不会复制 Markdown。`@ROOT.md` 与 Obsidian 的 `KanBan.md` 不会发布。
 
 ```bash
-pnpm solutions:check       # 初始化并校验当前锁定版本
-pnpm solutions:pull        # 增量拉取远端 main
-pnpm build:latest          # 拉取最新题解后构建
+pnpm content:check         # 初始化并校验两个内容源的当前锁定版本
+pnpm content:pull          # 拉取两个内容源的最新 main
+pnpm build:latest          # 拉取最新内容后构建
 ```
 
-普通的 `pnpm build` 使用博客仓库当前锁定的子模块提交，适合可复现部署。`pnpm solutions:pull` 更新后，父仓库会显示 `sources/my-solve` 的 Gitlink 发生变化；确认内容无误后再提交该引用。
+普通的 `pnpm build` 使用展示仓库当前锁定的两个子模块提交，适合可复现部署。`pnpm content:pull` 更新后，父仓库会显示对应 Gitlink 发生变化；确认内容无误后再提交引用。
 
 题解列表位于 `/solutions`，支持题号、标题与标签搜索，以及平台和热门算法标签筛选。详情页地址根据原题链接生成，不依赖包含空格或中文的本地文件名。
 
 ## 添加文章
 
-在 `src/content/articles/` 新建 `.md` 或 `.mdx` 文件。文件名会成为永久链接，例如 `my-note.md` 对应 `/articles/my-note`。
+在内容仓库的 `articles/` 中新建 `.md` 或 `.mdx` 文件。文件名会成为永久链接，例如 `my-note.md` 对应 `/articles/my-note`。
 
 ```yaml
 ---
@@ -106,7 +114,7 @@ publishedAt: 2026-07-15
 updatedAt: 2026-07-16 # 可选
 tags: [Astro, 写作]
 featured: false
-cover: ../../assets/example.png # 可选
+cover: ../@resource/attachments/example.png # 可选
 draft: false
 projects: [project-file-name] # 可选，显式关联项目
 sourceSpace: [space-file-name] # 可选，显式关联来源记录
@@ -117,7 +125,7 @@ sourceSpace: [space-file-name] # 可选，显式关联来源记录
 
 ## 添加项目
 
-在 `src/content/projects/` 新建 `.md` 或 `.mdx` 文件：
+在内容仓库的 `projects/` 中新建 `.md` 或 `.mdx` 文件：
 
 ```yaml
 ---
@@ -131,7 +139,7 @@ stack: [Astro, TypeScript]
 links:
   website: https://your-domain.com # 可选
   github: https://github.com/example/repo # 可选
-cover: ../../assets/example.png # 可选
+cover: ../@resource/attachments/example.png # 可选
 featured: false
 order: 3 # 可选，数字越小越靠前
 draft: false
@@ -142,7 +150,7 @@ draft: false
 
 ## 添加空间记录
 
-在 `src/content/space/` 新建 `.md` 或 `.mdx` 文件。所有记录都有独立永久链接。
+在内容仓库的 `space/` 中新建 `.md` 或 `.mdx` 文件。所有记录都有独立永久链接。
 
 ```yaml
 ---
