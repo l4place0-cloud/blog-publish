@@ -4,18 +4,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/sync-content.mjs",
+    "predev": "node scripts/sync-solutions.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/sync-content.mjs",
+    "prebuild": "node scripts/sync-solutions.mjs",
     "build": "astro build",
-    "build:latest": "pnpm content:pull && astro build",
+    "build:latest": "pnpm solutions:pull && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "content:check": "node scripts/sync-content.mjs",
-    "content:pull": "node scripts/sync-content.mjs --pull",
-    "solutions:check": "node scripts/sync-content.mjs",
-    "solutions:pull": "node scripts/sync-content.mjs --pull"
+    "solutions:check": "node scripts/sync-solutions.mjs",
+    "solutions:pull": "node scripts/sync-solutions.mjs --pull"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.2.1",

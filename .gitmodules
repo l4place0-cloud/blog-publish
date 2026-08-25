@@ -2,7 +2,3 @@
 	path = sources/my-solve
 	url = https://github.com/l4place0/my-solve.git
 	branch = main
-[submodule "sources/l4p-blog-content"]
-	path = sources/l4p-blog-content
-	url = https://github.com/l4place0/l4p-blog-content.git
-	branch = main
