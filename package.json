@@ -1,22 +1,17 @@
 {
-  "name": "l4p-blog",
+  "name": "blog-publish",
   "type": "module",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/sync-solutions.mjs",
-    "dev": "astro dev",
-    "prebuild": "node scripts/sync-solutions.mjs",
-    "build": "astro build",
+    "dev": "node scripts/run-with-content.mjs dev",
+    "build": "node scripts/run-with-content.mjs build",
     "build:content": "node scripts/run-with-content.mjs build",
-    "build:latest": "pnpm solutions:pull && astro build",
     "preview": "astro preview",
-    "test:publish": "node --test tests/publish-control.test.mjs",
+    "test:publish": "node --test tests/*.test.mjs",
     "astro": "astro",
-    "check": "astro check",
-    "check:content": "node scripts/run-with-content.mjs check",
-    "solutions:check": "node scripts/sync-solutions.mjs",
-    "solutions:pull": "node scripts/sync-solutions.mjs --pull"
+    "check": "node scripts/run-with-content.mjs check",
+    "check:content": "node scripts/run-with-content.mjs check"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.2.1",

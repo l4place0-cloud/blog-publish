@@ -5,8 +5,8 @@ import { resolve } from 'node:path';
 const repositoryRoot = realpathSync(new URL('..', import.meta.url));
 const mode = process.argv[2];
 
-if (!['build', 'check'].includes(mode)) {
-  throw new Error('Usage: node scripts/run-with-content.mjs <build|check>');
+if (!['build', 'check', 'dev'].includes(mode)) {
+  throw new Error('Usage: node scripts/run-with-content.mjs <build|check|dev>');
 }
 
 const git = (cwd, args) => execFileSync('git', ['-C', cwd, ...args], {

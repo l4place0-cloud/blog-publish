@@ -3,8 +3,16 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { resolve } from 'node:path';
 
-const blogContentRoot = resolve(process.env.BLOG_CONTENT_ROOT ?? './src/content');
-const solutionsContentRoot = resolve(process.env.SOLUTIONS_CONTENT_ROOT ?? './sources/my-solve');
+const requiredContentRoot = (name: 'BLOG_CONTENT_ROOT' | 'SOLUTIONS_CONTENT_ROOT') => {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is required; point it at a clean checkout of the corresponding content repository`);
+  }
+  return resolve(value);
+};
+
+const blogContentRoot = requiredContentRoot('BLOG_CONTENT_ROOT');
+const solutionsContentRoot = requiredContentRoot('SOLUTIONS_CONTENT_ROOT');
 
 const articles = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: resolve(blogContentRoot, 'articles') }),
