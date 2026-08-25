@@ -8,10 +8,13 @@
     "dev": "astro dev",
     "prebuild": "node scripts/sync-solutions.mjs",
     "build": "astro build",
+    "build:content": "node scripts/run-with-content.mjs build",
     "build:latest": "pnpm solutions:pull && astro build",
     "preview": "astro preview",
+    "test:publish": "node --test tests/publish-control.test.mjs",
     "astro": "astro",
     "check": "astro check",
+    "check:content": "node scripts/run-with-content.mjs check",
     "solutions:check": "node scripts/sync-solutions.mjs",
     "solutions:pull": "node scripts/sync-solutions.mjs --pull"
   },
@@ -28,6 +31,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.0"
   }
 }

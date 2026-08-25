@@ -1,9 +1,13 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { resolve } from 'node:path';
+
+const blogContentRoot = resolve(process.env.BLOG_CONTENT_ROOT ?? './src/content');
+const solutionsContentRoot = resolve(process.env.SOLUTIONS_CONTENT_ROOT ?? './sources/my-solve');
 
 const articles = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: resolve(blogContentRoot, 'articles') }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
@@ -19,7 +23,7 @@ const articles = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: resolve(blogContentRoot, 'projects') }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
@@ -40,7 +44,7 @@ const projects = defineCollection({
 });
 
 const space = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/space' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: resolve(blogContentRoot, 'space') }),
   schema: ({ image }) => z.object({
     type: z.enum(['thought', 'progress', 'link', 'photo', 'media', 'snippet']),
     publishedAt: z.coerce.date(),
@@ -74,7 +78,7 @@ const solutions = defineCollection({
       'nowcoder.com/**/*.md',
       'poj.org/**/*.md',
     ],
-    base: './sources/my-solve',
+    base: solutionsContentRoot,
   }),
   schema: z.object({
     type: z.literal('solution'),

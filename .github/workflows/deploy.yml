@@ -1,45 +1,142 @@
-name: Deploy to GitHub Pages
+name: Publish blog to GitHub Pages
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17,47 * * * *'
   workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even when this exact version was already deployed
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: blog-pages
   cancel-in-progress: true
 
 env:
-  SITE_URL: ${{ vars.SITE_URL || 'https://l4place0.github.io' }}
-  BASE_PATH: ${{ vars.BASE_PATH || '/l4p-blog' }}
+  BLOG_REPOSITORY: l4place0/blog
+  BLOG_REF: refs/heads/main
+  SOLUTIONS_REPOSITORY: l4place0/solutions
+  SOLUTIONS_REF: refs/heads/main
+  SITE_URL: ${{ vars.SITE_URL || 'https://l4place0-cloud.github.io' }}
+  BASE_PATH: ${{ vars.BASE_PATH || '/blog-publish' }}
+  BLOG_CONTENT_ROOT: ${{ github.workspace }}/.content-sources/blog
+  SOLUTIONS_CONTENT_ROOT: ${{ github.workspace }}/.content-sources/solutions
 
 jobs:
-  build:
+  discover:
     runs-on: ubuntu-latest
+    outputs:
+      display_sha: ${{ steps.resolve.outputs.display_sha }}
+      blog_sha: ${{ steps.resolve.outputs.blog_sha }}
+      solutions_sha: ${{ steps.resolve.outputs.solutions_sha }}
+      version: ${{ steps.resolve.outputs.version }}
+      cache_hit: ${{ steps.published.outputs.cache-hit }}
+      should_publish: ${{ steps.plan.outputs.should_publish }}
+      reason: ${{ steps.plan.outputs.reason }}
     steps:
-      - name: Checkout repository and solutions
+      - name: Checkout display repository
         uses: actions/checkout@v7
         with:
-          submodules: recursive
-      - name: Install, build, and upload site
+          persist-credentials: false
+
+      - name: Resolve exact source commits
+        id: resolve
+        run: node scripts/publish-control.mjs resolve
+
+      - name: Check successful deployment marker
+        id: published
+        uses: actions/cache/restore@v6
+        with:
+          path: .publish-state
+          key: published-v1-${{ steps.resolve.outputs.version }}
+          lookup-only: true
+
+      - name: Plan publication
+        id: plan
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          FORCE: ${{ inputs.force || false }}
+          CACHE_HIT: ${{ steps.published.outputs.cache-hit }}
+        run: node scripts/publish-control.mjs plan
+
+      - name: Report publication plan
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
+          REASON: ${{ steps.plan.outputs.reason }}
+        run: printf 'version=%s\nreason=%s\n' "$VERSION" "$REASON"
+
+  build:
+    needs: discover
+    if: needs.discover.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout display repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.discover.outputs.display_sha }}
+          persist-credentials: false
+
+      - name: Checkout blog content
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.BLOG_REPOSITORY }}
+          ref: ${{ needs.discover.outputs.blog_sha }}
+          path: .content-sources/blog
+          persist-credentials: false
+
+      - name: Checkout solutions
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOLUTIONS_REPOSITORY }}
+          ref: ${{ needs.discover.outputs.solutions_sha }}
+          path: .content-sources/solutions
+          persist-credentials: false
+
+      - name: Build and upload Pages artifact
         uses: withastro/action@v6
         with:
           node-version: 24
           package-manager: pnpm@11
+          build-cmd: pnpm run build:content
+          cache: false
 
   deploy:
-    if: vars.PAGES_DEPLOY_MODE == 'actions'
-    needs: build
+    needs: [discover, build]
+    if: needs.discover.outputs.should_publish == 'true' && vars.PAGES_DEPLOY_MODE == 'actions'
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+
+  mark_success:
+    needs: [discover, deploy]
+    if: needs.deploy.result == 'success' && needs.discover.outputs.cache_hit != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create successful-version marker
+        env:
+          VERSION: ${{ needs.discover.outputs.version }}
+        run: |
+          mkdir -p .publish-state
+          printf '%s\n' "$VERSION" > .publish-state/version
+
+      - name: Save successful deployment marker
+        uses: actions/cache/save@v6
+        with:
+          path: .publish-state
+          key: published-v1-${{ needs.discover.outputs.version }}
